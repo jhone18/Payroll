@@ -27,6 +27,18 @@ namespace Payroll.Controllers
             return View();
         }
 
+        // GET: Payroll/Income
+        public ActionResult Income()
+        {
+            return View();
+        }
+
+        // GET: Payroll/Deduction
+        public ActionResult Deduction()
+        {
+            return View();
+        }
+
         // POST: Payroll/Create
         [HttpPost]
         [ValidateAntiForgeryToken]

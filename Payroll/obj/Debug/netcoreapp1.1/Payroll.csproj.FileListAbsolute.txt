@@ -1,0 +1,9 @@
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.deps.json
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.runtimeconfig.json
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.runtimeconfig.dev.json
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.dll
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.pdb
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.AssemblyInfo.cs
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.dll
+c:\users\jaime\documents\visual studio 2017\Projects\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.pdb
+C:\Users\Jaime\documents\visual studio 2017\Projects\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.csprojResolveAssemblyReference.cache

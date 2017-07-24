@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Payroll.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Payroll
 {
@@ -28,6 +30,9 @@ namespace Payroll
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddDbContext<APPSECUContext>(options => options.UseSqlServer(Configuration.GetConnectionString("APPSECUConnectionString")));
+            services.AddDbContext<PayrollContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PayrollConnectionString")));
+
             services.AddMvc();
         }
 
@@ -55,6 +60,8 @@ namespace Payroll
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //DbInitializer.Initialize(context);
         }
     }
 }

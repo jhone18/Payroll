@@ -1,4 +1,10 @@
 ﻿// Write your Javascript code.
+$(function () {
+    $('#dateActivated').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView:2
+    });
+});
 
 function clearTextBox() {
     $('#userId').val("");
@@ -71,7 +77,7 @@ function Update() {
         Activated: $('#dateActivated').val(),
         Status: $('#status').val(),
     };
-
+    alert(JSON.stringify(user));
     $.ajax({
         url: "/Users/Edit",
         type: "POST",

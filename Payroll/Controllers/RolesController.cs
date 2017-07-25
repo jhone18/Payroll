@@ -4,21 +4,45 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Payroll.Data;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Payroll.Models;
 
 namespace Payroll.Controllers
 {
     public class RolesController : Controller
     {
-        // GET: Roles
-        public ActionResult Index()
+        private readonly APPSECUContext _context;
+
+        public RolesController(APPSECUContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        // GET: Roles
+        public async Task<ActionResult> Index()
+        {
+            return View(await _context.Roles.ToListAsync());
         }
 
         // GET: Roles/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int roleId)
         {
-            return View();
+            try
+            {
+                var role = await _context.Roles.AsNoTracking().SingleOrDefaultAsync(r => r.RoleId == roleId);
+
+                if (role == null)
+                {
+                    return null;
+                }
+                return Json(JsonConvert.SerializeObject(role));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Users()));
+            }
         }
 
         // GET: Roles/Create
@@ -29,18 +53,26 @@ namespace Payroll.Controllers
 
         // POST: Roles/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public JsonResult Create(string role)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    Roles roleObj = JsonConvert.DeserializeObject<Roles>(role);
+                    roleObj.Application = "Payroll";//ViewBag("Application");
+                    // TODO: Add update logic here
+                    //_context.Update(user);
+                    _context.Add(roleObj);
+                    _context.SaveChanges();
+                }
 
-                return RedirectToAction("Index");
+                return Json(new { Success = true });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Console.Write(ex.ToString());
+                return Json(new { Success = false });
             }
         }
 
@@ -52,41 +84,47 @@ namespace Payroll.Controllers
 
         // POST: Roles/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public JsonResult Edit(string role)
         {
             try
             {
                 // TODO: Add update logic here
 
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    Roles roleObj = JsonConvert.DeserializeObject<Roles>(role);
+                    var roleToUpdate = _context.Roles.Where(r => r.RoleId == roleObj.RoleId).FirstOrDefault();
+                    roleObj.Application = roleToUpdate.Application;
+
+                    _context.Entry(roleToUpdate).CurrentValues.SetValues(roleObj);
+
+                    // TODO: Add update logic here
+                    //_context.Update(user);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { Success = true });
             }
             catch
             {
-                return View();
+                return Json(new { Success = false });
             }
-        }
-
-        // GET: Roles/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
         }
 
         // POST: Roles/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public JsonResult Delete(int roleId)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                var roleToDelete = _context.Roles.Where(r => r.RoleId == roleId).FirstOrDefault();
+                _context.Entry(roleToDelete).State = EntityState.Deleted;
+                _context.SaveChanges();
+                return Json(new { Success = true });
             }
             catch
             {
-                return View();
+                return Json(new { Success = false });
             }
         }
     }

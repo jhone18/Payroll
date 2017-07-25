@@ -1,4 +1,4 @@
-﻿// Write your Javascript code.
+﻿//============================= Users =====================================//
 $(function () {
     $('#dateActivated').datetimepicker({
         format: 'mm/dd/yyyy',
@@ -6,21 +6,21 @@ $(function () {
     });
 });
 
-function clearTextBox() {
+function clearTextBox_Users() {
     $('#userId').val("");
     $('#firstName').val("");
     $('#lastName').val("");
     $('#dateActivated').val("");
     $('#status').val("");
-    $('#btnUpdate').hide();
-    $('#btnAdd').show();
+    $('#updateUser').hide();
+    $('#addUser').show();
     //$('#Name').css('border-color', 'lightgrey');
     //$('#Age').css('border-color', 'lightgrey');
     //$('#State').css('border-color', 'lightgrey');
     //$('#Country').css('border-color', 'lightgrey');
 }
 
-function Add() {
+function add_Users(){
     var user = {
         UserId: $('#userId').val(),
         UserFname: $('#firstName').val(),
@@ -35,7 +35,7 @@ function Add() {
         dataType: "json",
         success: function (result) {
             window.location.reload();
-            $('#myModal').modal('hide');
+            $('#userModal').modal('hide');
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -43,7 +43,7 @@ function Add() {
     });
 }
 
-function getbyID(userId) {
+function show_Users(userId) {
     $('#userId').css('border-color', 'lightgrey');
     $.ajax({
         url: "/Users/Details/?userId=" + userId,
@@ -57,9 +57,9 @@ function getbyID(userId) {
             $('#lastName').val(data.UserLname);
             $('#dateActivated').val(data.Activated);
             $('#status').val(data.Status.trim());
-            $('#myModal').modal('show');
-            $('#btnUpdate').show();
-            $('#btnAdd').hide();
+            $('#userModal').modal('show');
+            $('#updateUser').show();
+            $('#addUser').hide();
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -68,7 +68,7 @@ function getbyID(userId) {
     return false;
 }
 
-function Update() {
+function update_Users() {
 
     var user = {
         UserId: $('#userId').val(),
@@ -77,7 +77,6 @@ function Update() {
         Activated: $('#dateActivated').val(),
         Status: $('#status').val(),
     };
-    alert(JSON.stringify(user));
     $.ajax({
         url: "/Users/Edit",
         type: "POST",
@@ -85,7 +84,7 @@ function Update() {
         dataType: "json",
         success: function (result) {
             window.location.reload();
-            $('#myModal').modal('hide');
+            $('#userModal').modal('hide');
             $('#userId').val("");
             $('#firstName').val("");
             $('#lastName').val("");
@@ -98,7 +97,7 @@ function Update() {
     });
 }
 
-function Delete(userId) {
+function delete_Users(userId) {
     $.ajax({
         url: "/Users/Delete",
         type: "POST",
@@ -106,10 +105,105 @@ function Delete(userId) {
         dataType: "json",
         success: function (result) {
             window.location.reload();
-            $('#deleteModal').modal('hide');
+            $('#deleteUserModal' + userId).modal('hide');
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
         }
     });
 }
+//============================= Users =====================================//
+
+//============================= Users =====================================//
+function clearTextBox_Roles() {
+    $('#roleId').val("");
+    $('#roleDescription').val("");
+    $('#roleShortDescription').val("");
+    $('#updateRole').hide();
+    $('#addRole').show();
+}
+
+function add_Role() {
+    var role = {
+        Description: $('#roleDescription').val(),
+        ShortDesc: $('#roleShortDescription').val()
+    };
+    $.ajax({
+        url: "/Roles/Create",
+        data: "role=" + JSON.stringify(role),
+        type: "POST",
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#roleModal').modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function show_Role(roleId) {
+    $('#roleId').css('border-color', 'lightgrey');
+    $.ajax({
+        url: "/Roles/Details/?roleId=" + roleId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            $('#roleId').val(data.RoleId);
+            $('#roleDescription').val(data.Description);
+            $('#roleShortDescription').val(data.ShortDesc);
+            $('#roleModal').modal('show');
+            $('#updateRole').show();
+            $('#addRole').hide();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}
+
+function update_Role() {
+
+    var role = {
+        RoleId: $('#roleId').val(),
+        Description: $('#roleDescription').val(),
+        ShortDesc: $('#roleShortDescription').val()
+    };
+    $.ajax({
+        url: "/Roles/Edit",
+        type: "POST",
+        data: "role=" + JSON.stringify(role),
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#roleModal').modal('hide');
+            $('#roleId').val("");
+            $('#roleDescription').val("");
+            $('#roleShortDescription').val("");
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function delete_Role(roleId) {
+    $.ajax({
+        url: "/Roles/Delete",
+        type: "POST",
+        data: "roleId=" + roleId,
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#deleteUserModal' + roleId).modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+//============================= Users =====================================//

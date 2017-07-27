@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Payroll.Models
 {
@@ -9,13 +10,16 @@ namespace Payroll.Models
         public string CompanyId { get; set; }
         public string EmployeeId { get; set; }
         public string LoanCode { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal Principal { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal WithInterest { get; set; }
         public decimal TotalPayments { get; set; }
         public decimal Balance { get; set; }
         public decimal Amortization { get; set; }
         public decimal DeductAmount { get; set; }
         public string Frequency { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime ApprovedDate { get; set; }
         public DateTime StartDate { get; set; }
         public string Remarks { get; set; }
@@ -28,5 +32,11 @@ namespace Payroll.Models
 
         public virtual Employee Employee { get; set; }
         public virtual LoanCode LoanCodeNavigation { get; set; }
+    }
+
+    public partial class EmployeeLoan
+    {
+        public string FilterByEmployeeId { get; set; }
+        public string FilterByStatus { get; set; }
     }
 }

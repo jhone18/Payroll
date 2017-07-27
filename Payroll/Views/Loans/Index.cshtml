@@ -1,30 +1,34 @@
+@model Tuple<IEnumerable<Payroll.Models.Loan>, IEnumerable<Payroll.Models.Employee>, Payroll.Models.EmployeeLoan>
 @{
     ViewData["Title"] = "Loan Entry";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Loan Entry</h2>
-
-
-<div class="row">
+<div class="row form-filter">
     <div class="col-md-3">
         <label>Employee</label>
-        <select class="form-control" data-onload-select2>
-            <option selected value="001">Rene Barnachea</option>
+        <select id="employeeList" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus(this,'','@Url.Action("Index","Loans")')">
+            <option value="" selected></option>
+            @foreach (var item in Model.Item2)
+            {
+                var name = @item.FullName + " (" + @item.EmployeeId + ")";
+                <option value="@item.EmployeeId.Trim()">@name</option>
+            }
         </select>
     </div>
     <div class="col-md-3">
         <label>Filter By</label>
-        <select class="form-control" data-onload-select2>
-            <option value="Active">Active</option>
-            <option value="Hold">Hold</option>
-            <option value="Resigned">Resigned</option>
+        <select id="filterBy" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus('',this,'@Url.Action("Index","Loans")')">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="HOLD">HOLD</option>
+            <option value="RESIGNED">RESIGNED</option>
         </select>
     </div>
 </div>
-<div class="row">
-    <div class="table-responsive">
-        <table class="table table-hover">
+<div class="row form-group">
+    <div class="table-responsive" style="height:450px;">
+        <table class="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th class="table-cell-id">Loan Code</th>
@@ -35,43 +39,48 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="table-cell-id">1</td>
-                    <td>Loan 1</td>
-                    <td>100000</td>
-                    <td>10000</td>
-                    <td class="text-right text-nowrap">
-                        <small>06/09/2015 18:05</small>
-                    </td>
-                    <td class="table-cell-actions">
-                        <a href="#" class="item-action" title="Edit">
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a href="#" class="item-action item-action-danger" title="Delete">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="table-row-nested">
-                    <td class="table-cell-id">1</td>
-                    <td>Loan 2</td>
-                    <td>200000</td>
-                    <td>20000</td>
-                    <td class="text-right text-nowrap">
-                        <small>07/09/2015 10:05</small>
-                    </td>
-                    <td class="table-cell-actions">
-                        <a href="#" class="item-action" title="Edit">
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a href="#" class="item-action item-action-danger" title="Delete">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        </a>
-                    </td>
-                </tr>
+            <tbody id="myTable">
+                @foreach (var item in Model.Item1)
+                {
+                    <tr class="clickable-row">
+                        <td class="table-cell-id">@Html.DisplayFor(modelItem => item.LoanCode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.LoanCodeNavigation.LoanDescr)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Principal)</td>
+                        <td>@Html.DisplayFor(modelitem => item.WithInterest)</td>
+                        <td class="text-right text-nowrap">
+                            @Html.DisplayFor(modelItem => item.ApprovedDate, "{ 0:MM/dd/yyyy}")
+                        <td class="table-cell-actions">
+                            <a href="#" onclick="return show_Loans('@item.LoanCode.Trim()')" class="item-action item-action-raised" title="Edit">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a href="#" class="item-action item-action-danger" title="Delete" data-toggle="modal" data-target="#@("deleteLoansModal"+item.LoanCode.Trim())">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </a>
+                            <div class="modal fade" id="@("deleteLoansModal"+item.LoanCode.Trim())" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="userModalLabel">Confirm Delete</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete @item.LoanCode?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Users('@item.LoanCode');">Delete</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
+    </div>
+    <div class="col-md-12 text-center">
+        <ul class="pagination pagination-lg pager" id="myPager"></ul>
     </div>
 </div>
 <div id="myModal" class="modal fade" role="dialog">
@@ -93,3 +102,10 @@
 <div class="row">
     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">New Loan</button>
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#employeeList option[value='" + '@Model.Item3.FilterByEmployeeId' + "']").prop("selected", "selected");
+        $("#filterBy option[value='" + '@Model.Item3.FilterByStatus' + "']").prop("selected", "selected");
+    });
+</script>

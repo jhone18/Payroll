@@ -21,7 +21,6 @@
                 @foreach (var item in Model)
                 {
                     <tr class="clickable-row">
-                        <td class="table-cell-id">@Html.DisplayFor(modelItem => item.RoleId)</td>
                         <td>@Html.DisplayFor(modelItem => item.Description)</td>
                         <td>@Html.DisplayFor(modelItem => item.ShortDesc)</td>
                         <td class="table-cell-actions">
@@ -39,7 +38,7 @@
                                             <h4 class="modal-title" id="roleModalLabel">Confirm Delete</h4>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete: @item.RoleId?
+                                            Are you sure you want to delete: @item.ShortDesc?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger" id="deleteRole" onclick="return delete_Role('@item.RoleId');">Delete</button>
@@ -65,15 +64,7 @@
                     <h5 class="modal-title">Update Role Entry</h5>
                 </div>
                 <div class="modal-body">
-                    @*@Html.Partial("Details", Model, new ViewDataDictionary(ViewData) { { "userId", "admin" } });*@
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Role Id</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="roleId" />
-                        </div>
-                    </div>
+                    <input type="hidden" id="roleId" />
                     <div class="row">
                         <div class="col-md-3">
                             <label>Short Description</label>

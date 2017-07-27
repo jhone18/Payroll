@@ -10,6 +10,7 @@ function clearTextBox_Users() {
     $('#userId').val("");
     $('#firstName').val("");
     $('#lastName').val("");
+    $('#password').val("");
     $('#dateActivated').val("");
     $('#status').val("");
     $('#updateUser').hide();
@@ -25,6 +26,7 @@ function add_Users(){
         UserId: $('#userId').val(),
         UserFname: $('#firstName').val(),
         UserLname: $('#lastName').val(),
+        Password: $('#password').val(),
         Activated: $('#dateActivated').val(),
         Status: $('#status').val(),
     };
@@ -55,6 +57,7 @@ function show_Users(userId) {
             $('#userId').val(data.UserId);
             $('#firstName').val(data.UserFname);
             $('#lastName').val(data.UserLname);
+            $('#password').val(data.Password);
             $('#dateActivated').val(data.Activated);
             $('#status').val(data.Status.trim());
             $('#userModal').modal('show');
@@ -74,6 +77,7 @@ function update_Users() {
         UserId: $('#userId').val(),
         UserFname: $('#firstName').val(),
         UserLname: $('#lastName').val(),
+        Password: $('#password').val(),
         Activated: $('#dateActivated').val(),
         Status: $('#status').val(),
     };
@@ -88,6 +92,7 @@ function update_Users() {
             $('#userId').val("");
             $('#firstName').val("");
             $('#lastName').val("");
+            $('#password').val("");
             $('#dateActivated').val("");
             $('#status').val("");
         },

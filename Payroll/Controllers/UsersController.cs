@@ -70,8 +70,7 @@ namespace Payroll.Controllers
                 if (ModelState.IsValid)
                 {
                     Users userObj = JsonConvert.DeserializeObject<Users>(user);
-                    userObj.Application = "Payroll";//ViewBag("Application");
-                    userObj.Password = "";
+                    userObj.Application = "PAYROLL";//ViewBag("Application");
                     // TODO: Add update logic here
                     //_context.Update(user);
                     _context.Add(userObj);

@@ -1,4 +1,4 @@
-@model Tuple<IEnumerable<Payroll.Models.Loan>, IEnumerable<Payroll.Models.Employee>, Payroll.Models.EmployeeLoan>
+@model Tuple<IEnumerable<Payroll.Models.Loan>, IEnumerable<Payroll.Models.Employee>, IEnumerable<Payroll.Models.LoanCode>, Payroll.Models.EmployeeLoan>
 @{
     ViewData["Title"] = "Loan Entry";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -50,13 +50,13 @@
                         <td class="text-right text-nowrap">
                             @Html.DisplayFor(modelItem => item.ApprovedDate, "{ 0:MM/dd/yyyy}")
                         <td class="table-cell-actions">
-                            <a href="#" onclick="return show_Loans('@item.LoanCode.Trim()')" class="item-action item-action-raised" title="Edit">
+                            <a href="#" onclick="return show_Loan('@item.LoanId')" class="item-action item-action-raised" title="Edit">
                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                             </a>
-                            <a href="#" class="item-action item-action-danger" title="Delete" data-toggle="modal" data-target="#@("deleteLoansModal"+item.LoanCode.Trim())">
+                            <a href="#" class="item-action item-action-danger" title="Delete" data-toggle="modal" data-target="#@("deleteLoanModal"+item.LoanId)">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </a>
-                            <div class="modal fade" id="@("deleteLoansModal"+item.LoanCode.Trim())" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="@("deleteLoanModal"+item.LoanId)" role="dialog" aria-labelledby="loanModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -64,7 +64,7 @@
                                             <h4 class="modal-title" id="userModalLabel">Confirm Delete</h4>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete @item.LoanCode?
+                                            Are you sure you want to delete @item.LoanCodeNavigation.LoanDescr?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Users('@item.LoanCode');">Delete</button>
@@ -83,29 +83,159 @@
         <ul class="pagination pagination-lg pager" id="myPager"></ul>
     </div>
 </div>
-<div id="myModal" class="modal fade" role="dialog">
+<div class="row">
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal">New Loan</button>
+</div>
+<div id="loanModal" class="modal fade" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Loan Entry</h5>
+                <h5 class="modal-title">Loan Entry</h5>
             </div>
             <div class="modal-body">
-                @Html.Partial("Create")
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Loan</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="hidden" id="loanId" />
+                        <select class="form-control" id="loanType">
+                            <option></option>
+                            @foreach (var item in Model.Item3)
+                            {
+                                <option value="@item.LoanCode1.Trim()">@Html.DisplayFor(modelItem => item.LoanDescr)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Loan Principal</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanPrincipal" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Loan Amount</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanAmount" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Total Payment</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanTotalPayment" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Balance</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanBalance" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Amortization</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanAmortization" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-heading-extended">
+                            <label>Deduct Every</label>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="checkbox" id="loan1stPeriod" /> 1st Period
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="checkbox" disabled id="loan3rdPeriod"/> 3rd Period
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="checkbox" id="loan2ndPeriod"/> 2st Period
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="checkbox" disabled id="loan4thPeriod" /> 4th Period
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    &nbsp;
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="checkbox" disabled id="loan5thPeriod" /> 5th Period
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Date Granted</label>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="loanDateGranted"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Date Start</label>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="loanDateStart"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Remarks</label>
+                    </div>
+                    <div class="col-md-9">
+                        <textarea class="form-control" rows="4" id="loanRemarks"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-9">
+                        <input type="checkbox" id="loanHoldPayment" /> Hold Payment
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="addLoan" onclick="return add_Loan();">Add</button>
+                <button type="button" class="btn btn-primary" id="updateLoan" style="display:none;" onclick="update_Loan();">Update</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">New Loan</button>
-</div>
+
 
 <script type="text/javascript">
     $(function () {
-        $("#employeeList option[value='" + '@Model.Item3.FilterByEmployeeId' + "']").prop("selected", "selected");
-        $("#filterBy option[value='" + '@Model.Item3.FilterByStatus' + "']").prop("selected", "selected");
+        $("#employeeList option[value='" + '@Model.Item4.FilterByEmployeeId' + "']").prop("selected", "selected");
+        $("#filterBy option[value='" + '@Model.Item4.FilterByStatus' + "']").prop("selected", "selected");
     });
 </script>

@@ -1,10 +1,20 @@
-﻿//============================= Users =====================================//
-$(function () {
+﻿$(function () {
     $('#dateActivated').datetimepicker({
         format: 'mm/dd/yyyy',
         minView: 2
     });
+
+    $('#loanDateGranted').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2
+    });
+    $('#loanDateStart').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2
+    });
 });
+
+//============================= Users =====================================//
 
 function clearTextBox_Users() {
     $('#userId').val("");
@@ -221,6 +231,146 @@ function loansFilterByEmployeeStatus(empId, status, baseURL) {
     else if (empId == '')
         window.location.href = baseURL + "?employeeId=" + $('#employeeList').val() + "&status=" + status.value;
 }
+
+function clearTextBox_Loans() {
+    $('#loanId').val('');
+    $('#loanType').val('');
+    $('#loanPrincipal').val('');
+    $('#loanAmount').val('');
+    $('#loanTotalPayment').val('');
+    $('#loanBalance').val('');
+    $('#loanAmortization').val('');
+    $('#loanDateGranted').val('');
+    $('#loanDateStart').val('');
+    $('#loanRemarks').val('');
+    $('#loanHoldPayment').prop('checked', false);
+}
+
+function add_Loan() {
+    var loan = {
+        LoanId : $('#loanId').val(),
+        LoanCode : $('#loanType').val(),
+        Principal : $('#loanPrincipal').val(),
+        WithInterest : $('#loanAmount').val(),
+        TotalPayments : $('#loanTotalPayment').val(),
+        Balance : $('#loanBalance').val(),
+        Amortization : $('#loanAmortization').val(),
+        ApprovedDate : $('#loanDateGranted').val(),
+        StartDate : $('#loanDateStart').val(),
+        Remarks : $('#loanRemarks').val(),
+        Hold : $('#loanHoldPayment').val()
+    };
+    
+    $.ajax({
+        url: "/Loan/Create",
+        data: "loan=" + JSON.stringify(loan),
+        type: "POST",
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#loanModal').modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function show_Loan(loanId) {
+    $('#loanId').css('border-color', 'lightgrey');
+    $.ajax({
+        url: "/Loans/Details/?loanId=" + loanId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            $('#loanId').val(data.LoanId);
+            $('#loanType').val(data.LoanCode.trim());
+            $('#loanPrincipal').val(data.Principal);
+            $('#loanAmount').val(data.WithInterest);
+            $('#loanTotalPayment').val(data.TotalPayments);
+            $('#loanBalance').val(data.Balance);
+            $('#loanAmortization').val(data.Amortization);
+            $('#loanDateGranted').val(data.ApprovedDate);
+            $('#loanDateStart').val(data.StartDate);
+            $('#loanRemarks').val(data.Remarks);
+            $('#loanHoldPayment').prop('checked', data.Hold);
+            switch (data.Frequency.trim())
+            {
+                case '1':
+                    $('#loan1stPeriod').prop('checked', true);
+                    $('#loan2ndPeriod').prop('checked', false);
+                    break;
+                case '2':
+                    $('#loan1stPeriod').prop('checked', false);
+                    $('#loan2ndPeriod').prop('checked', true);
+                    break;
+                case '12':
+                    $('#loan1stPeriod').prop('checked', true);
+                    $('#loan2ndPeriod').prop('checked', true);
+                    break;
+            }
+
+            $('#loanModal').modal('show');
+            $('#updateLoan').show();
+            $('#addLoan').hide();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}
+
+function update_Loan() {
+    var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
+    var loan = {
+        LoanId : $('#loanId').val(),
+        LoanCode : $('#loanType').val(),
+        Principal : $('#loanPrincipal').val(),
+        WithInterest : $('#loanAmount').val(),
+        TotalPayments : $('#loanTotalPayment').val(),
+        Balance : $('#loanBalance').val(),
+        Amortization : $('#loanAmortization').val(),
+        ApprovedDate : $('#loanDateGranted').val(),
+        StartDate : $('#loanDateStart').val(),
+        Remarks: $('#loanRemarks').val(),
+        Hold: $('#loanHoldPayment').is(':checked') ? true : false,
+        Frequency: frequency
+    };
+    $.ajax({
+        url: "/Loans/Edit",
+        type: "POST",
+        data: "loan=" + JSON.stringify(loan),
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#loanModal').modal('hide');
+            clearTextBox_Loans();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function delete_Loan(loanId) {
+    $.ajax({
+        url: "/Loans/Delete",
+        type: "POST",
+        data: "LoanId=" + loanId,
+        dataType: "json",
+        success: function (result) {
+            window.location.reload();
+            $('#deleteLoanModal' + loanId).modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
 
 $.fn.pageMe = function (opts) {
     var $this = this,

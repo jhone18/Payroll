@@ -53,42 +53,20 @@ namespace Payroll.Controllers
                 loans = await _context.Loan.Include(l => l.LoanCodeNavigation).Include(e => e.Employee).Where(e => e.EmployeeId == employeeId && e.Employee.EmployeeStatus == status).ToListAsync();
                 
             }
+            var loanCodes = await _context.LoanCode.AsNoTracking().ToListAsync();
             empLoan.FilterByEmployeeId = employeeId;
             empLoan.FilterByStatus = status;
-            var tupleView = new Tuple<IEnumerable<Loan>, IEnumerable<Employee>, EmployeeLoan>(loans, employees, empLoan);
+            var tupleView = new Tuple<IEnumerable<Loan>, IEnumerable<Employee>, IEnumerable<LoanCode>, EmployeeLoan>(loans, employees, loanCodes, empLoan);
 
             return View(tupleView);
         }
 
-        public async Task<JsonResult> LoanCodes()
-        {
-            try
-            {
-                var loanCodes = await _context.LoanCode.AsNoTracking().ToListAsync();
-
-                if (loanCodes == null)
-                {
-                    return null;
-                }
-                return Json(JsonConvert.SerializeObject(loanCodes));
-            }
-            catch
-            {
-                return Json(JsonConvert.SerializeObject(new LoanCode()));
-            }
-        }
-
         // GET: Loans/Details/5
-        public async Task<JsonResult> Details(string loanCode)
+        public async Task<JsonResult> Details(long loanId)
         {
             try
             {
-                if (string.IsNullOrEmpty(loanCode))
-                {
-                    return null;
-                }
-
-                var loan = await _context.Loan.AsNoTracking().SingleOrDefaultAsync(m => m.LoanCode == loanCode);
+                var loan = await _context.Loan.AsNoTracking().SingleOrDefaultAsync(m => m.LoanId == loanId);
 
                 if (loan == null)
                 {
@@ -98,8 +76,9 @@ namespace Payroll.Controllers
 
                 return Json(JsonConvert.SerializeObject(loan));
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return Json(JsonConvert.SerializeObject(new Loan()));
             }
         }
@@ -141,20 +120,33 @@ namespace Payroll.Controllers
 
         // POST: Loans/Edit/5
         [HttpPost]
-        public JsonResult Edit(string loan)
+        public async Task<JsonResult> Edit(string loan)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    Loan loanObj = JsonConvert.DeserializeObject<Loan>(loan);
-                    var loanToUpdate = _context.Loan.Where(u => u.LoanCode == loanObj.LoanCode).FirstOrDefault();
 
-                    _context.Entry(loanToUpdate).CurrentValues.SetValues(loanObj);
+                    Loan loanEntity = JsonConvert.DeserializeObject<Loan>(loan);
+                    var loanToUpdate = _context.Loan.Where(u => u.LoanCode == loanEntity.LoanCode).FirstOrDefault();
+
+                    loanToUpdate.LoanCode = loanEntity.LoanCode;
+                    loanToUpdate.Principal = loanEntity.Principal;
+                    loanToUpdate.WithInterest = loanEntity.WithInterest;
+                    loanToUpdate.TotalPayments = loanEntity.TotalPayments;
+                    loanToUpdate.Balance = loanEntity.Balance;
+                    loanToUpdate.Amortization = loanEntity.Amortization;
+                    loanToUpdate.ApprovedDate = loanEntity.ApprovedDate;
+                    loanToUpdate.StartDate = loanEntity.StartDate;
+                    loanToUpdate.Remarks = loanEntity.Remarks;
+                    loanToUpdate.Hold = loanEntity.Hold;
+                    loanToUpdate.Frequency = loanEntity.Frequency;
+                    _context.Entry(loanToUpdate).State = EntityState.Modified;
+                    
+                    //_context.Entry(loanToUpdate).CurrentValues.SetValues(loanObj);
 
                     // TODO: Add update logic here
-                    //_context.Update(user);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
 
                 return Json(new { Success = true });

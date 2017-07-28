@@ -34,6 +34,10 @@ namespace Payroll
             services.AddDbContext<PayrollContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PayrollConnectionString")));
 
             services.AddMvc();
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,12 +57,12 @@ namespace Payroll
             }
 
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Login}/{id?}");
             });
 
             //DbInitializer.Initialize(context);

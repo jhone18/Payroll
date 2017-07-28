@@ -232,6 +232,12 @@ function loansFilterByEmployeeStatus(empId, status, baseURL) {
         window.location.href = baseURL + "?employeeId=" + $('#employeeList').val() + "&status=" + status.value;
 }
 
+function selectedCompany(baseUrl) {
+    var companyId = $("#loanCompanyCode").val();
+    var companyName = $("#loanCompanyCode").text();
+    location.href = baseUrl + "?companyId=" + companyId + "&companyName=" + companyName;
+}
+
 function clearTextBox_Loans() {
     $('#loanId').val('');
     $('#loanType').val('');
@@ -250,19 +256,19 @@ function add_Loan() {
     var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
     var loan = {
         EmployeeId: $('#employeeList').val(),
-        LoanCode : $('#loanType').val(),
-        Principal : $('#loanPrincipal').val(),
-        WithInterest : $('#loanAmount').val(),
-        TotalPayments : $('#loanTotalPayment').val(),
-        Balance : $('#loanBalance').val(),
-        Amortization : $('#loanAmortization').val(),
-        ApprovedDate : $('#loanDateGranted').val(),
-        StartDate : $('#loanDateStart').val(),
-        Remarks : $('#loanRemarks').val(),
+        LoanCode: $('#loanType').val(),
+        Principal: $('#loanPrincipal').val(),
+        WithInterest: $('#loanAmount').val(),
+        TotalPayments: $('#loanTotalPayment').val(),
+        Balance: $('#loanBalance').val(),
+        Amortization: $('#loanAmortization').val(),
+        ApprovedDate: $('#loanDateGranted').val(),
+        StartDate: $('#loanDateStart').val(),
+        Remarks: $('#loanRemarks').val(),
         Hold: $('#loanHoldPayment').is(':checked') ? true : false,
         Frequency: frequency
     };
-    
+
     $.ajax({
         url: "/Loans/Create",
         data: "loan=" + JSON.stringify(loan),
@@ -298,8 +304,7 @@ function show_Loan(loanId) {
             $('#loanDateStart').val(data.StartDate);
             $('#loanRemarks').val(data.Remarks);
             $('#loanHoldPayment').prop('checked', data.Hold);
-            switch (data.Frequency.trim())
-            {
+            switch (data.Frequency.trim()) {
                 case '1':
                     $('#loan1stPeriod').prop('checked', true);
                     $('#loan2ndPeriod').prop('checked', false);
@@ -328,15 +333,15 @@ function show_Loan(loanId) {
 function update_Loan() {
     var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
     var loan = {
-        LoanId : $('#loanId').val(),
-        LoanCode : $('#loanType').val(),
-        Principal : $('#loanPrincipal').val(),
-        WithInterest : $('#loanAmount').val(),
-        TotalPayments : $('#loanTotalPayment').val(),
-        Balance : $('#loanBalance').val(),
-        Amortization : $('#loanAmortization').val(),
-        ApprovedDate : $('#loanDateGranted').val(),
-        StartDate : $('#loanDateStart').val(),
+        LoanId: $('#loanId').val(),
+        LoanCode: $('#loanType').val(),
+        Principal: $('#loanPrincipal').val(),
+        WithInterest: $('#loanAmount').val(),
+        TotalPayments: $('#loanTotalPayment').val(),
+        Balance: $('#loanBalance').val(),
+        Amortization: $('#loanAmortization').val(),
+        ApprovedDate: $('#loanDateGranted').val(),
+        StartDate: $('#loanDateStart').val(),
         Remarks: $('#loanRemarks').val(),
         Hold: $('#loanHoldPayment').is(':checked') ? true : false,
         Frequency: frequency

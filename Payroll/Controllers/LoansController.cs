@@ -42,10 +42,12 @@ namespace Payroll.Controllers
             var employees = new List<Employee>();
             var loans = new List<Loan>();
             var empLoan = new EmployeeLoan();
+            var companyId = HttpContext.Session.GetString("CompanyId");
+
             if (string.IsNullOrEmpty(employeeId))
             {
                 employees = await _context.Employee.AsNoTracking().ToListAsync();
-                loans = await _context.Loan.Include(l => l.LoanCodeNavigation).Where(e=> e.Employee.EmployeeStatus.Trim() == status).ToListAsync();
+                loans = await _context.Loan.Include(l => l.LoanCodeNavigation).Where(e=> e.Employee.EmployeeStatus.Trim() == status && e.CompanyId == companyId).ToListAsync();
             }
             else
             {

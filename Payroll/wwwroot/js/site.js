@@ -247,8 +247,9 @@ function clearTextBox_Loans() {
 }
 
 function add_Loan() {
+    var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
     var loan = {
-        LoanId : $('#loanId').val(),
+        EmployeeId: $('#employeeList').val(),
         LoanCode : $('#loanType').val(),
         Principal : $('#loanPrincipal').val(),
         WithInterest : $('#loanAmount').val(),
@@ -258,11 +259,12 @@ function add_Loan() {
         ApprovedDate : $('#loanDateGranted').val(),
         StartDate : $('#loanDateStart').val(),
         Remarks : $('#loanRemarks').val(),
-        Hold : $('#loanHoldPayment').val()
+        Hold: $('#loanHoldPayment').is(':checked') ? true : false,
+        Frequency: frequency
     };
     
     $.ajax({
-        url: "/Loan/Create",
+        url: "/Loans/Create",
         data: "loan=" + JSON.stringify(loan),
         type: "POST",
         dataType: "json",

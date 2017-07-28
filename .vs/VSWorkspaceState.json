@@ -1,0 +1,19 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Payroll",
+    "\\Payroll\\Controllers",
+    "\\Payroll\\Data",
+    "\\Payroll\\Models",
+    "\\Payroll\\Views",
+    "\\Payroll\\Views\\Loans",
+    "\\Payroll\\Views\\Roles",
+    "\\Payroll\\Views\\Shared",
+    "\\Payroll\\Views\\Users",
+    "\\Payroll\\wwwroot",
+    "\\Payroll\\wwwroot\\css",
+    "\\Payroll\\wwwroot\\js"
+  ],
+  "SelectedNode": "\\Payroll\\Controllers\\LoansController.cs",
+  "PreviewInSolutionExplorer": false
+}

@@ -98,6 +98,12 @@ namespace Payroll.Controllers
                 if (ModelState.IsValid)
                 {
                     Loan loanObj = JsonConvert.DeserializeObject<Loan>(loan);
+                    loanObj.CreatedBy = "admin";
+                    loanObj.CreatedDate = DateTime.Now;
+                    loanObj.LastUpdBy = "admin";
+                    loanObj.LastUpdDate = DateTime.Now;
+                    loanObj.CompanyId = "ABC";
+
                     // TODO: Add update logic here
                     //_context.Update(user);
                     _context.Add(loanObj);
@@ -165,11 +171,11 @@ namespace Payroll.Controllers
 
         // POST: Loans/Delete/5
         [HttpPost]
-        public JsonResult Delete(string loanCode)
+        public JsonResult Delete(long loanId)
         {
             try
             {
-                var loanToDelete = _context.Loan.Where(u => u.LoanCode == loanCode).FirstOrDefault();
+                var loanToDelete = _context.Loan.Where(u => u.LoanId == loanId).FirstOrDefault();
                 _context.Entry(loanToDelete).State = EntityState.Deleted;
                 _context.SaveChanges();
                 return Json(new { Success = true });

@@ -27,7 +27,7 @@
     </div>
 </div>
 <div class="row form-group">
-    <div class="table-responsive" style="height:450px;">
+    <div class="table-responsive" style="height:430px;">
         <table class="table table-hover table-bordered">
             <thead>
                 <tr>
@@ -67,7 +67,7 @@
                                             Are you sure you want to delete @item.LoanCodeNavigation.LoanDescr?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Users('@item.LoanCode');">Delete</button>
+                                            <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Loan('@item.LoanId');">Delete</button>
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -80,11 +80,11 @@
         </table>
     </div>
     <div class="col-md-12 text-center">
-        <ul class="pagination pagination-lg pager" id="myPager"></ul>
+        <ul class="pagination pagination-lg pager" id="myPager" ></ul>
     </div>
 </div>
 <div class="row">
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal">New Loan</button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal" id="newLoan">New Loan</button>
 </div>
 <div id="loanModal" class="modal fade" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -237,5 +237,11 @@
     $(function () {
         $("#employeeList option[value='" + '@Model.Item4.FilterByEmployeeId' + "']").prop("selected", "selected");
         $("#filterBy option[value='" + '@Model.Item4.FilterByStatus' + "']").prop("selected", "selected");
+        if ($("#employeeList").val() == '') {
+            $("#newLoan").hide();
+        }
+        else {
+            $("#newLoan").show();
+        }
     });
 </script>

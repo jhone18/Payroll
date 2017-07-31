@@ -6,6 +6,7 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "bootstrap-ui": "v1.1.0"
+    "bootstrap-ui": "v1.1.0",
+    "datatables": "datatable#1.10.13"
   }
 }

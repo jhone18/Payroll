@@ -1,4 +1,4 @@
-@model Tuple<IEnumerable<Payroll.Models.Loan>, IEnumerable<Payroll.Models.Employee>, IEnumerable<Payroll.Models.LoanCode>, Payroll.Models.EmployeeLoan>
+@model Tuple<IEnumerable<Payroll.Models.LoanCode>, Payroll.Models.EmployeeLoan>
 @{
     ViewData["Title"] = "Loan Entry";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,8 +8,8 @@
 <div class="row form-filter">
     <div class="col-md-3">
         <label>Employee</label>
-        <input type="text" class="form-control" id="loanEmployees"/>
-        <input type="hidden" id="loanEmployeesId"/>
+        <input type="text" class="form-control" id="loanEmployees" placeholder="Search Employee"/>
+        <input type="hidden" id="loanEmployeesId" value=""/>
         @*<select id="employeeList" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus(this,'','@Url.Action("Index","Loans")')">
             <option value="" selected></option>
             @foreach (var item in Model.Item2)
@@ -43,7 +43,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="myTable">
+            @*<tbody id="myTable">
                 @foreach (var item in Model.Item1)
                 {
                     <tr class="clickable-row">
@@ -80,7 +80,7 @@
                         </td>
                     </tr>
                 }
-            </tbody>
+            </tbody>*@
         </table>
     </div>
     <div class="col-md-12 text-center">
@@ -115,7 +115,7 @@
                         <input type="hidden" id="loanId" />
                         <select class="form-control" id="loanType">
                             <option></option>
-                            @foreach (var item in Model.Item3)
+                            @foreach (var item in Model.Item1)
                             {
                                 <option value="@item.LoanCode1.Trim()">@Html.DisplayFor(modelItem => item.LoanDescr)</option>
                             }
@@ -248,11 +248,11 @@
 
 <script type="text/javascript">
     $(function () {
-        //$("#employeeList option[value='" + '@Model.Item4.FilterByEmployeeId' + "']").prop("selected", "selected");
-        $("#loanEmployees").val('@Model.Item4.FilterByEmployeeName');
-        $("#loanEmployeesId").val('@Model.Item4.FilterByEmployeeId');
+        //$("#employeeList option[value='" + '@Model.Item2.FilterByEmployeeId' + "']").prop("selected", "selected");
+        $("#loanEmployees").val('@Model.Item2.FilterByEmployeeName');
+        $("#loanEmployeesId").val('@Model.Item2.FilterByEmployeeId');
 
-        $("#filterBy option[value='" + '@Model.Item4.FilterByStatus' + "']").prop("selected", "selected");
+        $("#filterBy option[value='" + '@Model.Item2.FilterByStatus' + "']").prop("selected", "selected");
         if ($("#employeeList").val() == '') {
             $("#newLoan").hide();
         }

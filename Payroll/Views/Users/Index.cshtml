@@ -8,55 +8,55 @@
 
 <div class="form-group row">
     <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered" id="usersTable">
             <thead>
-                <tr>
-                    <th class="table-cell-id">User ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Date Activated</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr class="clickable-row">
-                        <td class="table-cell-id">@Html.DisplayFor(modelItem => item.UserId)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserFname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UserLname)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Activated, "{ 0:MM/dd/yyyy}")</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+        <tr>
+            <th class="table-cell-id">User ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date Activated</th>
+            <th>Status</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    @*<tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="clickable-row">
+                <td class="table-cell-id">@Html.DisplayFor(modelItem => item.UserId)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserFname)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserLname)</td>
+                <td>@Html.DisplayFor(modelItem => item.Activated, "{ 0:MM/dd/yyyy}")</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
 
-                        <td class="table-cell-actions">
-                            <a href="#" onclick="return show_Users('@item.UserId.Trim()')" class="item-action item-action-raised" title="Edit">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </a>
-                            <a href="#" class="item-action item-action-danger" title="Delete" data-toggle="modal" data-target="#@("deleteUserModal"+item.UserId.Trim())">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </a>
-                            <div class="modal fade" id="@("deleteUserModal"+item.UserId.Trim())" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-sm" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <h4 class="modal-title" id="userModalLabel">Confirm Delete</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete @item.UserId?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Users('@item.UserId');">Delete</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
+                <td class="table-cell-actions">
+                    <a href="#" onclick="return show_Users('@item.UserId.Trim()')" class="item-action item-action-raised" title="Edit">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a>
+                    <a href="#" class="item-action item-action-danger" title="Delete" data-toggle="modal" data-target="#@("deleteUserModal"+item.UserId.Trim())">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                    <div class="modal fade" id="@("deleteUserModal"+item.UserId.Trim())" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="userModalLabel">Confirm Delete</h4>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete @item.UserId?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" id="deleteUser" onclick="return delete_Users('@item.UserId');">Delete</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+            </tbody>*@
         </table>
     </div>
     <div class="row">

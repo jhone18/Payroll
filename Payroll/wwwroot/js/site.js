@@ -12,6 +12,51 @@
         format: 'mm/dd/yyyy',
         minView: 2
     });
+    $("#usersTable").dataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "ordering": false,
+        lengthChange: false,
+        "ajax": {
+            "url": "/Users/GetDetails",
+            "type": "GET",
+            "contentType": 'application/json; charset=utf-8',
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "userId", "name" : "User Id"},
+            { "data": "userFname", "name": "First Name" },
+            { "data": "userLname", "name": "Last Name" },
+            { "data": "activated", "name": "Date Activated" },
+            { "data": "status", "name": "Status" },
+            { "data": "htmlButtons", "name" : ""}
+        ]
+    });
+
+    var empId = $("#loanEmployeesId").val();
+    var status = $("#filterBy").val();
+    $("#loanTable").dataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "ordering": false,
+        lengthChange: false,
+        "ajax": {
+            "url": "/Loans/GetDetails?empId=" + empId + "&status=" + status,
+            "type": "GET",
+            "contentType": 'application/json; charset=utf-8',
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "loanCode", "name": "Loan Code" },
+            { "data": "loanDescr", "name": "Description" },
+            { "data": "principal", "name": "Loan Principal" },
+            { "data": "withInterest", "name": "Loan Amount" },
+            { "data": "approvedDate", "name": "Date Approved" },
+            { "data": "htmlButtons", "name": "" }
+        ]
+    });
 });
 
 //============================= Users =====================================//
@@ -542,19 +587,6 @@ $(document).ready(function () {
         $("#loanEmployeesEntry").autocomplete("option", "appendTo", "#loanModal");
     });
 
-    $('#myTable').pageMe({ pagerSelector: '#myPager', showPrevNext: true, hidePageNumbers: false, perPage: 10 });
-    //$("#loanTable").dataTable({
-    //    searching: false,
-    //    lengthChange: false,
-    //    serverSide: true,
-    //    processing: true,
-    //    "ajax": {
-    //        "url": "/Loans/Index",
-    //        "data": {
-    //            employeeId: '',
-    //            "status": "ACTIVE"
-    //        }
-    //    }
-    //});
+    //$('#myTable').pageMe({ pagerSelector: '#myPager', showPrevNext: true, hidePageNumbers: false, perPage: 10 });
 });
 //============================= Loans =====================================//

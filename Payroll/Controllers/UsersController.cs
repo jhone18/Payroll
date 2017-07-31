@@ -54,6 +54,52 @@ namespace Payroll.Controllers
             }
         }
 
+       [HttpGet]
+        public async Task<JsonResult> GetDetails(int draw, int start, int length)
+        {
+            try
+            {
+                var user = await _context.Users.AsNoTracking().ToListAsync();
+                var recordsTotal = user.Count();
+
+                if (user == null)
+                {
+                    return null;
+                }
+                var data = (from d in user
+                            let htmlButtons = "<a href = '#' onclick=show_Users('"+d.UserId.Trim()+"'); class='item-action item-action-raised' title='Edit'>" +
+                                            "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteUserModal"+d.UserId.Trim()+"'>" +
+                                            "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<div class='modal fade' id='deleteUserModal"+d.UserId.Trim()+"' role='dialog' aria-labelledby='userModalLabel' aria-hidden='true'>" +
+                                            "<div class='modal-dialog modal-sm' role='document'>" +
+                                                "<div class='modal-content'>" +
+                                                    "<div class='modal-header'>" +
+                                                        "<button type = 'button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
+                                                        "<h4 class='modal-title' id='userModalLabel'>Confirm Delete</h4>" +
+                                                    "</div>" +
+                                                    "<div class='modal-body'>" +
+                                                        "Are you sure you want to delete " + d.UserId + "?" +
+                                                    "</div>" +
+                                                    "<div class='modal-footer'>" +
+                                                        "<button type = 'button' class='btn btn-danger' id='deleteUser' onclick=delete_Users('" + d.UserId.Trim()+"');>Delete</button>" +
+                                                        "<button type = 'button' class='btn btn-default' data-dismiss='modal'>Close</button>" +
+                                                    "</div>" +
+                                                "</div>" +
+                                            "</div>" +
+                                        "</div>"
+                            select new { d.UserId, d.UserFname, d.UserLname, d.Activated, d.Status, htmlButtons });//JsonConvert.SerializeObject(user);
+               
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data.Skip(start).Take(length) });
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Users()));
+            }
+        }
+
         // GET: Users/Create
         public ActionResult Create()
         {

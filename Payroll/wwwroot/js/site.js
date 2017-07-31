@@ -559,6 +559,11 @@ $(document).ready(function () {
             loansFilterByEmployeeStatus(ui.item.id, '', '/Loans/Index');
         }
     });
+    $("#loanEmployees").focusout(function () {
+        if ($(this).val() == '') {
+            window.location.href = "/Loans/Index";
+        }
+    });
 
     $('#loanEmployeesEntry').on("keydown.autocomplete", function () {
         $("#loanEmployeesEntry").autocomplete({
@@ -586,6 +591,8 @@ $(document).ready(function () {
         });
         $("#loanEmployeesEntry").autocomplete("option", "appendTo", "#loanModal");
     });
+
+
 
     //$('#myTable').pageMe({ pagerSelector: '#myPager', showPrevNext: true, hidePageNumbers: false, perPage: 10 });
 });

@@ -59,3 +59,18 @@ textarea {
     text-align: left;
     vertical-align: middle;
 }
+
+
+ul.ui-autocomplete {
+    z-index: 1100;
+}
+
+.ui-autocomplete {
+    position: fixed;
+ 
+
+.ui-autocomplete-loading {
+    background: white url("../images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+
+.ui-autocomplete { height: 200px; overflow-y: scroll; overflow-x: hidden;}

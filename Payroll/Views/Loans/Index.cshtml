@@ -8,14 +8,18 @@
 <div class="row form-filter">
     <div class="col-md-3">
         <label>Employee</label>
-        <select id="employeeList" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus(this,'','@Url.Action("Index","Loans")')">
+        <input type="text" class="form-control" id="loanEmployees"/>
+        <input type="hidden" id="loanEmployeesId"/>
+        @*<select id="employeeList" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus(this,'','@Url.Action("Index","Loans")')">
             <option value="" selected></option>
             @foreach (var item in Model.Item2)
             {
                 var name = @item.FullName + " (" + @item.EmployeeId + ")";
                 <option value="@item.EmployeeId.Trim()">@name</option>
             }
-        </select>
+
+        </select>*@
+        
     </div>
     <div class="col-md-3">
         <label>Filter By</label>
@@ -27,8 +31,8 @@
     </div>
 </div>
 <div class="row form-group">
-    <div class="table-responsive" style="height:430px;">
-        <table class="table table-hover table-bordered">
+    <div class="table-responsive"> <!--style="height:430px;"-->
+        <table class="table table-hover table-bordered" id="loanTable">
             <thead>
                 <tr>
                     <th class="table-cell-id">Loan Code</th>
@@ -84,7 +88,7 @@
     </div>
 </div>
 <div class="row">
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal" id="newLoan">New Loan</button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal" id="newLoan" onclick="clearTextBox_Loans();">New Loan</button>
 </div>
 <div id="loanModal" class="modal fade" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -94,6 +98,15 @@
                 <h5 class="modal-title">Loan Entry</h5>
             </div>
             <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Employee</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="loanEmployeesEntry" />
+                        <input type="hidden" id="loanEmployeesEntryId" />
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-3">
                         <label>Loan</label>
@@ -235,7 +248,10 @@
 
 <script type="text/javascript">
     $(function () {
-        $("#employeeList option[value='" + '@Model.Item4.FilterByEmployeeId' + "']").prop("selected", "selected");
+        //$("#employeeList option[value='" + '@Model.Item4.FilterByEmployeeId' + "']").prop("selected", "selected");
+        $("#loanEmployees").val('@Model.Item4.FilterByEmployeeName');
+        $("#loanEmployeesId").val('@Model.Item4.FilterByEmployeeId');
+
         $("#filterBy option[value='" + '@Model.Item4.FilterByStatus' + "']").prop("selected", "selected");
         if ($("#employeeList").val() == '') {
             $("#newLoan").hide();

@@ -23,8 +23,13 @@
         <link href="~/lib/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
         <link href="~/lib/bootstrap-ui/dist/css/bootstrap-datetimepicker.css" rel="stylesheet" />
     </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript)
+    
+            @Html.Raw(JavaScriptSnippet.FullScript)
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet"
+          href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+    <script type="text/javascript"
+            src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-static-top navbar-primary">

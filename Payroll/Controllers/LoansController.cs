@@ -8,6 +8,7 @@ using Payroll.Data;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Payroll.Models;
+using System.Net;
 
 namespace Payroll.Controllers
 {
@@ -43,6 +44,7 @@ namespace Payroll.Controllers
             var loans = new List<Loan>();
             var empLoan = new EmployeeLoan();
             var companyId = HttpContext.Session.GetString("CompanyId");
+            var employee = new Employee();
 
             if (string.IsNullOrEmpty(employeeId))
             {
@@ -53,14 +55,46 @@ namespace Payroll.Controllers
             {
                 employees = await _context.Employee.AsNoTracking().ToListAsync();
                 loans = await _context.Loan.Include(l => l.LoanCodeNavigation).Include(e => e.Employee).Where(e => e.EmployeeId == employeeId && e.Employee.EmployeeStatus == status).ToListAsync();
-                
+                employee = await _context.Employee.AsNoTracking().SingleOrDefaultAsync(e => e.EmployeeId == employeeId);
             }
             var loanCodes = await _context.LoanCode.AsNoTracking().ToListAsync();
             empLoan.FilterByEmployeeId = employeeId;
+
+            
+            empLoan.FilterByEmployeeId = employeeId;
+            empLoan.FilterByEmployeeName = employee == null ? string.Empty : employee.FullName;
             empLoan.FilterByStatus = status;
             var tupleView = new Tuple<IEnumerable<Loan>, IEnumerable<Employee>, IEnumerable<LoanCode>, EmployeeLoan>(loans, employees, loanCodes, empLoan);
 
             return View(tupleView);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetEmployees(string term)
+        {
+            try
+            {
+                var employees = await _context.Employee.AsNoTracking().Where(e=> e.FullName.Contains(term)).ToListAsync();
+
+                if (employees == null)
+                {
+                    return null;
+                }
+
+                var result = (from c in employees
+                              let id = c.EmployeeId
+                              let label = c.FullName
+                              let value = c.FullName
+                              select new { id, value, label });
+
+                Response.StatusCode = (int)HttpStatusCode.OK;
+                return Json(JsonConvert.SerializeObject(result));
+            }
+            catch
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(JsonConvert.SerializeObject(new Employee()));
+            }
         }
 
         // GET: Loans/Details/5
@@ -69,7 +103,7 @@ namespace Payroll.Controllers
             try
             {
                 var loan = await _context.Loan.AsNoTracking().SingleOrDefaultAsync(m => m.LoanId == loanId);
-
+                loan.Employee = await _context.Employee.AsNoTracking().SingleAsync(e => e.EmployeeId == loan.EmployeeId);
                 if (loan == null)
                 {
                     return null;

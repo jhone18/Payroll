@@ -44,6 +44,7 @@ namespace Payroll.Models
     public partial class EmployeeLoan
     {
         public string FilterByEmployeeId { get; set; }
+        public string FilterByEmployeeName { get; set; }
         public string FilterByStatus { get; set; }
     }
 }

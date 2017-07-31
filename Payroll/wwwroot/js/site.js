@@ -227,9 +227,9 @@ function delete_Role(roleId) {
 
 function loansFilterByEmployeeStatus(empId, status, baseURL) {
     if (status == '')
-        window.location.href = baseURL + "?employeeId=" + empId.value + "&status=" + $('#filterBy').val();
+        window.location.href = baseURL + "?employeeId=" + empId + "&status=" + $('#filterBy').val();
     else if (empId == '')
-        window.location.href = baseURL + "?employeeId=" + $('#employeeList').val() + "&status=" + status.value;
+        window.location.href = baseURL + "?employeeId=" + $('#loanEmployeesId').val() + "&status=" + status.value;
 }
 
 function selectedCompany(baseUrl) {
@@ -239,6 +239,8 @@ function selectedCompany(baseUrl) {
 }
 
 function clearTextBox_Loans() {
+    $('#loanEmployeesEntry').val('');
+    $('#loanEmployeesEntryId').val('');
     $('#loanId').val('');
     $('#loanType').val('');
     $('#loanPrincipal').val('');
@@ -250,12 +252,16 @@ function clearTextBox_Loans() {
     $('#loanDateStart').val('');
     $('#loanRemarks').val('');
     $('#loanHoldPayment').prop('checked', false);
+    $('#loan1stPeriod').prop('checked', false);
+    $('#loan2ndPeriod').prop('checked', false);
+    $('#loanEmployeesEntry').prop("disabled", false);
 }
 
 function add_Loan() {
+    
     var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
     var loan = {
-        EmployeeId: $('#employeeList').val(),
+        EmployeeId: $("#loanEmployeesEntryId").val(),
         LoanCode: $('#loanType').val(),
         Principal: $('#loanPrincipal').val(),
         WithInterest: $('#loanAmount').val(),
@@ -285,6 +291,10 @@ function add_Loan() {
 }
 
 function show_Loan(loanId) {
+    if ($("#loanEmployeesEntry").data('autocomplete')) {
+        $("#loanEmployeesEntry").autocomplete("destroy");
+    }
+    $('#loanEmployeesEntry').prop("disabled", true);
     $('#loanId').css('border-color', 'lightgrey');
     $.ajax({
         url: "/Loans/Details/?loanId=" + loanId,
@@ -293,6 +303,8 @@ function show_Loan(loanId) {
         dataType: "json",
         success: function (result) {
             var data = jQuery.parseJSON(result);
+            $('#loanEmployeesEntry').val(data.Employee.FullName);
+            $('#loanEmployeesEntryId').val(data.EmployeeId);
             $('#loanId').val(data.LoanId);
             $('#loanType').val(data.LoanCode.trim());
             $('#loanPrincipal').val(data.Principal);
@@ -318,7 +330,6 @@ function show_Loan(loanId) {
                     $('#loan2ndPeriod').prop('checked', true);
                     break;
             }
-
             $('#loanModal').modal('show');
             $('#updateLoan').show();
             $('#addLoan').hide();
@@ -482,6 +493,68 @@ $.fn.pageMe = function (opts) {
 };
 
 $(document).ready(function () {
+
+    $("#loanEmployees").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Loans/GetEmployees",
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    term: request.term
+                },
+                success: function (data) {
+                    response(JSON.parse(data).splice(0,10));
+                }
+            });
+        },
+        minLength: 2,
+        select: function (event, ui) {
+            //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+            loansFilterByEmployeeStatus(ui.item.id, '', '/Loans/Index');
+        }
+    });
+
+    $('#loanEmployeesEntry').on("keydown.autocomplete", function () {
+        $("#loanEmployeesEntry").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Loans/GetEmployees",
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response(JSON.parse(data).splice(0, 10));
+                    },
+                    error: function (err) {
+                        alert(err);
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                $("#loanEmployeesEntryId").val(ui.item.id);
+            }
+        });
+        $("#loanEmployeesEntry").autocomplete("option", "appendTo", "#loanModal");
+    });
+
     $('#myTable').pageMe({ pagerSelector: '#myPager', showPrevNext: true, hidePageNumbers: false, perPage: 10 });
+    //$("#loanTable").dataTable({
+    //    searching: false,
+    //    lengthChange: false,
+    //    serverSide: true,
+    //    processing: true,
+    //    "ajax": {
+    //        "url": "/Loans/Index",
+    //        "data": {
+    //            employeeId: '',
+    //            "status": "ACTIVE"
+    //        }
+    //    }
+    //});
 });
 //============================= Loans =====================================//

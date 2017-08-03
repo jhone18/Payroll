@@ -675,7 +675,7 @@ $(document).ready(function () {
                 "ordering": false,
                 lengthChange: false,
                 "ajax": {
-                    "url": "/Payroll/GetDeductionDetails?empId=" + empId + "&status=" + status,
+                    "url": "/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status,
                     "type": "GET",
                     "contentType": 'application/json; charset=utf-8',
                     "datatype": "json"
@@ -711,6 +711,23 @@ $(document).ready(function () {
         minView: 2
     });
 
+    $('#deductionTranDate').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2
+    });
+
+
+    $('#deductionRecurStart').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2
+    });
+
+
+    $('#deductionRecurEnd').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2
+    });
+
     $("#searchByType").hide();
     $("#payrollTabs").tabs();
     $("#payrollTabs").tabs("disable");
@@ -736,6 +753,20 @@ function clearTextBox_PayrollIncome() {
     $('#addPayrollIncome').show();
     $('#income1stPeriod').prop('checked', false);
     $('#income2ndPeriod').prop('checked', false);
+}
+
+function clearTextBox_PayrollDeduction() {
+    $("#deductionId").val("");
+    $('#deductionDescription').val("");
+    $('#deductionTranDate').val("");
+    $('#deductionAmount').val("");
+    $('#deductionRecurStart').val("");
+    $('#deductionRecurEnd').val("");
+    $('#deductionFrequency').val("");
+    $('#updatePayrollDeduction').hide();
+    $('#addPayrollDeduction').show();
+    $('#deduction1stPeriod').prop('checked', false);
+    $('#deduction2ndPeriod').prop('checked', false);
 }
 
 function add_PayrollIncome() {
@@ -764,10 +795,36 @@ function add_PayrollIncome() {
     });
 }
 
+function add_PayrollDeduction() {
+    var frequency = ($('#deduction1stPeriod').is(':checked') ? '1' : '') + ($('#deduction2ndPeriod').is(':checked') ? '2' : '');
+    var deduction = {
+        DedCode: $("#deductionDescription").val(),
+        EmployeeId: $("#payrollSearchTextId").val(),
+        TranDate: $('#deductionTranDate').val(),
+        DedAmount: $('#deductionAmount').val(),
+        RecurStart: $('#deductionRecurStart').val(),
+        RecurEnd: $('#deductionRecurEnd').val(),
+        Frequency: frequency
+    };
+    $.ajax({
+        url: "/Payroll/CreateDeduction",
+        data: "deduction=" + JSON.stringify(deduction),
+        type: "POST",
+        dataType: "json",
+        success: function (result) {
+            $("#deductionTable").DataTable().ajax.reload();
+            $('#deductionModal').modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
 function show_PayrollIncome(incomeId) {
     //$('#userId').css('border-color', 'lightgrey');
     $.ajax({
-        url: "/Payroll/Details/?incomeId=" + incomeId,
+        url: "/Payroll/DetailsIncome/?incomeId=" + incomeId,
         type: "GET",
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
@@ -798,6 +855,48 @@ function show_PayrollIncome(incomeId) {
             $('#incomeModal').modal('show');
             $('#updatePayrollIncome').show();
             $('#addPayrollIncome').hide();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}
+
+function show_PayrollDeduction(deductionId) {
+    //$('#userId').css('border-color', 'lightgrey');
+    $.ajax({
+        url: "/Payroll/DetailsDeduction/?deductionId=" + deductionId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            $("#payrollSearchTextId").val(data.EmployeeId);
+            $("#deductionId").val(data.DeductionId);
+            $("#deductionCode").val(data.DedCode);
+            $('#deductionDescription').val(data.DedCode);
+            $('#deductionTranDate').val(data.TranDate);
+            $('#deductionAmount').val(data.DedAmount);
+            $('#deductionRecurStart').val(data.RecurStart);
+            $('#deductionRecurEnd').val(data.RecurEnd);
+            switch (data.Frequency.trim()) {
+                case '1':
+                    $('#deduction1stPeriod').prop('checked', true);
+                    $('#deduction2ndPeriod').prop('checked', false);
+                    break;
+                case '2':
+                    $('#deduction1stPeriod').prop('checked', false);
+                    $('#deduction2ndPeriod').prop('checked', true);
+                    break;
+                case '12':
+                    $('#deduction1stPeriod').prop('checked', true);
+                    $('#deduction2ndPeriod').prop('checked', true);
+                    break;
+            }
+            $('#deductionModal').modal('show');
+            $('#updatePayrollDeduction').show();
+            $('#addPayrollDeduction').hide();
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -840,6 +939,39 @@ function update_PayrollIncome() {
     });
 }
 
+function update_PayrollDeduction() {
+    var frequency = ($('#deduction1stPeriod').is(':checked') ? '1' : '') + ($('#deduction2ndPeriod').is(':checked') ? '2' : '');
+    var deduction = {
+        DeductionId: $("#deductionId").val(),
+        EmployeeId: $("#payrollSearchTextId").val(),
+        DedCode: $("#deductionDescription").val(),
+        TranDate: $('#deductionTranDate').val(),
+        DedAmount: $('#deductionAmount').val(),
+        RecurStart: $('#deductionRecurStart').val(),
+        RecurEnd: $('#deductionRecurEnd').val(),
+        Frequency: frequency
+    };
+    $.ajax({
+        url: "/Payroll/EditDeduction",
+        type: "POST",
+        data: "deduction=" + JSON.stringify(deduction),
+        dataType: "json",
+        success: function (result) {
+            $("#deductionTable").DataTable().ajax.reload();
+            $('#deductionModal').modal('hide');
+            $('#deductionId').val("");
+            $('#deductionTranDate').val("");
+            $('#deductionAmount').val("");
+            $('#deductionRecurStart').val("");
+            $('#deductionRecurEnd').val("");
+            $('#deductionFrequency').val("");
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
 function delete_PayrollIncome(incomeId) {
     $.ajax({
         url: "/Payroll/DeleteIncome",
@@ -856,4 +988,19 @@ function delete_PayrollIncome(incomeId) {
     });
 }
 
+function delete_PayrollDeduction(deductionId) {
+    $.ajax({
+        url: "/Payroll/DeleteDeduction",
+        type: "POST",
+        data: "deductionId=" + deductionId,
+        dataType: "json",
+        success: function (result) {
+            $("#deductionTable").DataTable().ajax.reload();
+            $('#deleteDeductionModal' + deductionId).modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
 //============================= Payroll =====================================//

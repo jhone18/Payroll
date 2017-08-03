@@ -206,26 +206,26 @@ namespace Payroll.Controllers
                 var deduction = new List<Deduction>();
                 if (string.IsNullOrEmpty(searchText))
                 {
-                    deduction = await _context.Deduction.Include(e => e.Employee).Where(e => e.Employee.EmployeeStatus == status).AsNoTracking().ToListAsync();
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data =deduction});
                 }
                 else
                 {
-                    deduction = await _context.Deduction.Include(e => e.Employee).Where(e => e.EmployeeId == searchText && e.Employee.EmployeeStatus == status).AsNoTracking().ToListAsync();
+                    deduction = await _context.Deduction.Include(e => e.Employee).Include(d=> d.DeductionCode).Where(e => e.EmployeeId == searchText && e.Employee.EmployeeStatus == status).AsNoTracking().ToListAsync();
                 }
                 var recordsTotal = deduction.Count();
 
                 if (deduction == null)
                 {
-                    return null;
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = deduction });
                 }
                 var data = (from d in deduction
-                            let htmlButtons = "<a href = '#' onclick=show_Deduction('" + d.DeductionCode + "'); class='item-action item-action-raised' title='Edit'>" +
+                            let htmlButtons = "<a href = '#' onclick=show_PayrollDeduction('" + d.DeductionId + "'); class='item-action item-action-raised' title='Edit'>" +
                                             "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>" +
                                         "</a>" +
-                                        "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteDeductionModal" + d.DeductionCode + "'>" +
+                                        "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteDeductionModal" + d.DeductionId + "'>" +
                                             "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>" +
                                         "</a>" +
-                                        "<div class='modal fade' id='deleteDeductionModal" + d.DeductionCode + "' role='dialog' aria-labelledby='deductionModalLabel' aria-hidden='true'>" +
+                                        "<div class='modal fade' id='deleteDeductionModal" + d.DeductionId + "' role='dialog' aria-labelledby='deductionModalLabel' aria-hidden='true'>" +
                                             "<div class='modal-dialog modal-sm' role='document'>" +
                                                 "<div class='modal-content'>" +
                                                     "<div class='modal-header'>" +
@@ -236,7 +236,7 @@ namespace Payroll.Controllers
                                                         "Are you sure you want to delete ?" +
                                                     "</div>" +
                                                     "<div class='modal-footer'>" +
-                                                        "<button type = 'button' class='btn btn-danger' id='deleteDeduction' onclick=delete_Deduction('" + d.DeductionCode + "');>Delete</button>" +
+                                                        "<button type = 'button' class='btn btn-danger' id='deletePayrollDeduction' onclick=delete_PayrollDeduction('" + d.DeductionId + "');>Delete</button>" +
                                                         "<button type = 'button' class='btn btn-default' data-dismiss='modal'>Close</button>" +
                                                     "</div>" +
                                                 "</div>" +
@@ -248,12 +248,12 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Deduction()));
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Deduction() });
             }
         }
 
         // GET: Payroll/Details/5
-        public async Task<JsonResult> Details(int incomeId)
+        public async Task<JsonResult> DetailsIncome(int incomeId)
         {
             try
             {
@@ -264,6 +264,24 @@ namespace Payroll.Controllers
                 }
 
                 return Json(JsonConvert.SerializeObject(earning));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Earning()));
+            }
+        }
+
+        public async Task<JsonResult> DetailsDeduction(int deductionId)
+        {
+            try
+            {
+                var deduction = await _context.Deduction.Where(e => e.DeductionId == deductionId).AsNoTracking().SingleOrDefaultAsync();
+                if (deduction == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(deduction));
             }
             catch
             {
@@ -318,6 +336,34 @@ namespace Payroll.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CreateDeduction(string deduction)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Deduction deductionObj = JsonConvert.DeserializeObject<Deduction>(deduction);
+                    deductionObj.CreatedBy = "admin";
+                    deductionObj.CreatedDate = DateTime.Now;
+                    deductionObj.LastUpdBy = "admin";
+                    deductionObj.LastUpdDate = DateTime.Now;
+                    deductionObj.CompanyId = "ABC";
+
+                    // TODO: Add update logic here
+                    //_context.Update(user);
+                    _context.Add(deductionObj);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                return Json(new { Success = false });
+            }
+        }
+
         // GET: Payroll/Edit/5
         public ActionResult Edit(int id)
         {
@@ -357,6 +403,38 @@ namespace Payroll.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> EditDeduction(string deduction)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    Deduction deductionEntity = JsonConvert.DeserializeObject<Deduction>(deduction);
+                    var incomeToUpdate = _context.Deduction.Where(u => u.DeductionId == deductionEntity.DeductionId).FirstOrDefault();
+
+                    incomeToUpdate.TranDate = deductionEntity.TranDate;
+                    incomeToUpdate.DedAmount = deductionEntity.DedAmount;
+                    incomeToUpdate.RecurStart = deductionEntity.RecurStart;
+                    incomeToUpdate.RecurEnd = deductionEntity.RecurEnd;
+                    incomeToUpdate.Frequency = deductionEntity.Frequency;
+                    _context.Entry(incomeToUpdate).State = EntityState.Modified;
+
+                    //_context.Entry(loanToUpdate).CurrentValues.SetValues(loanObj);
+
+                    // TODO: Add update logic here
+                    await _context.SaveChangesAsync();
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                return Json(new { Success = false });
+            }
+        }
+
         // GET: Payroll/Delete/5
         public ActionResult Delete(int id)
         {
@@ -370,6 +448,22 @@ namespace Payroll.Controllers
             {
                 var incomeToDelete = _context.Earning.Where(u => u.EarningId == incomeId).FirstOrDefault();
                 _context.Entry(incomeToDelete).State = EntityState.Deleted;
+                _context.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                return Json(new { Success = false });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteDeduction(long deductionId)
+        {
+            try
+            {
+                var deductionToDelete = _context.Deduction.Where(u => u.DeductionId== deductionId).FirstOrDefault();
+                _context.Entry(deductionToDelete).State = EntityState.Deleted;
                 _context.SaveChanges();
                 return Json(new { Success = true });
             }

@@ -396,7 +396,7 @@
                                     <h5 class="modal-title">Update Deduction Entry</h5>
                                 </div>
                                 <div class="modal-body">
-                                    @Html.Partial("Deduction")
+                                    @Html.Partial("Deduction", Model.Item2)
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" id="addPayrollDeduction" onclick="return add_PayrollDeduction();">Add</button>
@@ -407,7 +407,7 @@
                         </div>
                     </div>
                     <div class="footer">
-                        <button type="button" class="btn btn-primary" id="addPayrollDeduction" data-toggle="modal" data-target="#deductionModal" onclick="add_PayrollDeduction();">New</button>
+                        <button type="button" class="btn btn-primary" id="addPayrollDeduction" data-toggle="modal" data-target="#deductionModal" onclick="clearTextBox_PayrollDeduction();">New</button>
                     </div>
                 </div>
             </div>

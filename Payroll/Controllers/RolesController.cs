@@ -45,6 +45,51 @@ namespace Payroll.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetDetails(int draw, int start, int length)
+        {
+            try
+            {
+                var role = await _context.Roles.AsNoTracking().ToListAsync();
+                var recordsTotal = role.Count();
+
+                if (role == null)
+                {
+                    return null;
+                }
+                var data = (from d in role
+                            let htmlButtons = "<a href = '#' onclick=show_Roles('" + d.RoleId + "'); class='item-action item-action-raised' title='Edit'>" +
+                                            "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteRoleModal" + d.RoleId + "'>" +
+                                            "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<div class='modal fade' id='deleteRoleModal" + d.RoleId + "' role='dialog' aria-labelledby='roleModalLabel' aria-hidden='true'>" +
+                                            "<div class='modal-dialog modal-sm' role='document'>" +
+                                                "<div class='modal-content'>" +
+                                                    "<div class='modal-header'>" +
+                                                        "<button type = 'button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
+                                                        "<h4 class='modal-title' id='roleModalLabel'>Confirm Delete</h4>" +
+                                                    "</div>" +
+                                                    "<div class='modal-body'>" +
+                                                        "Are you sure you want to delete " + d.ShortDesc + "?" +
+                                                    "</div>" +
+                                                    "<div class='modal-footer'>" +
+                                                        "<button type = 'button' class='btn btn-danger' id='deleteRole' onclick=delete_Role('" + d.RoleId + "');>Delete</button>" +
+                                                        "<button type = 'button' class='btn btn-default' data-dismiss='modal'>Close</button>" +
+                                                    "</div>" +
+                                                "</div>" +
+                                            "</div>" +
+                                        "</div>"
+                            select new { d.RoleId, d.ShortDesc, htmlButtons });//JsonConvert.SerializeObject(role);
+
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data.Skip(start).Take(length) });
+            }
+            catch
+            {
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Roles() });
+            }
+        }
         // GET: Roles/Create
         public ActionResult Create()
         {

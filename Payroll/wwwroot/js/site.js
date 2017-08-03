@@ -143,6 +143,28 @@ function delete_Users(userId) {
 //============================= Users =====================================//
 
 //============================= Roles =====================================//
+
+$(function () {
+    $("#roleTable").dataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "ordering": false,
+        lengthChange: false,
+        "ajax": {
+            "url": "/Roles/GetDetails",
+            "type": "GET",
+            "contentType": 'application/json; charset=utf-8',
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "roleId", "name": "Role Id" },
+            { "data": "shortDesc", "name": "Description" },
+            { "data": "htmlButtons", "name": "" }
+        ]
+    });
+});
+
 function clearTextBox_Roles() {
     $('#roleId').val("");
     $('#roleDescription').val("");
@@ -162,7 +184,7 @@ function add_Role() {
         type: "POST",
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#roleTable").DataTable().ajax.reload();
             $('#roleModal').modal('hide');
         },
         error: function (errormessage) {
@@ -207,7 +229,7 @@ function update_Role() {
         data: "role=" + JSON.stringify(role),
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#roleTable").DataTable().ajax.reload();
             $('#roleModal').modal('hide');
             $('#roleId').val("");
             $('#roleDescription').val("");
@@ -226,7 +248,7 @@ function delete_Role(roleId) {
         data: "roleId=" + roleId,
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#roleTable").DataTable().ajax.reload();
             $('#deleteUserModal' + roleId).modal('hide');
         },
         error: function (errormessage) {

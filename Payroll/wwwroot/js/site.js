@@ -59,7 +59,7 @@ function add_Users() {
         type: "POST",
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#usersTable").DataTable().ajax.reload();
             $('#userModal').modal('hide');
         },
         error: function (errormessage) {
@@ -110,7 +110,7 @@ function update_Users() {
         data: "jsonData=" + JSON.stringify(user),
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#usersTable").DataTable().ajax.reload();
             $('#userModal').modal('hide');
             $('#userId').val("");
             $('#firstName').val("");
@@ -132,7 +132,7 @@ function delete_Users(userId) {
         data: "userId=" + userId,
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#usersTable").DataTable().ajax.reload();
             $('#deleteUserModal' + userId).modal('hide');
         },
         error: function (errormessage) {

@@ -68,66 +68,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Update Users Entry</h5>
+                    <h5 class="modal-title">Users Entry</h5>
                 </div>
                 <div class="modal-body">
-                    @*@Html.Partial("Details", Model, new ViewDataDictionary(ViewData) { { "userId", "admin" } });*@
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>User Id</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="userId" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>First Name</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="firstName" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Last Name</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="lastName" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Password</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="password" class="form-control" id="password" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Date Activated</label>
-                        </div>
-                        <div class="col-md-8 input-group date" id="dateActivatedPicker" style="padding-left:15px;padding-right:15px;">
-                            <input type="text" class="form-control" id="dateActivated" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Status</label>
-                        </div>
-                        <div class="col-md-8">
-                            <select class="form-control" id="status">
-                                <option value="ACTIVE">ACTIVE</option>
-                                <option value="INACTIVE">INACTIVE</option>
-                                <option value="LOCKED">LOCKED</option>
-                            </select>
-                        </div>
-                    </div>
-                    @*@Html.Partial("Detail")*@
+                    @Html.Partial("Details")
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="addUser" onclick="return add_Users();">Add</button>

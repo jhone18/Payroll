@@ -26,7 +26,9 @@ namespace Payroll.Controllers
         public async Task<IActionResult> Index()
         {
             var earningCodes = await _context.EarningCode.AsNoTracking().ToListAsync();
-            var tupleView = new Tuple<IEnumerable<EarningCode>>(earningCodes);
+            var deductionCodes = await _context.DeductionCode.AsNoTracking().ToListAsync();
+
+            var tupleView = new Tuple<IEnumerable<EarningCode>, IEnumerable<DeductionCode>>(earningCodes, deductionCodes);
             return View(tupleView);
         }
 

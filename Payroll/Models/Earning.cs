@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Payroll.Models
 {
     public partial class Earning
     {
+       
         public long EarningId { get; set; }
         public string CompanyId { get; set; }
+        [Required]
         public string EmployeeId { get; set; }
+        [Required]
         public string EarnCode { get; set; }
         public DateTime? TranDate { get; set; }
         public decimal Amount { get; set; }
@@ -20,5 +24,6 @@ namespace Payroll.Models
         public DateTime LastUpdDate { get; set; }
 
         public virtual EarningCode EarningCode { get; set; }
+        public virtual Employee Employee { get; set; }
     }
 }

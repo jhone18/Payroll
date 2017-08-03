@@ -21,5 +21,6 @@ namespace Payroll.Models
         public DateTime LastUpdDate { get; set; }
 
         public virtual DeductionCode DeductionCode { get; set; }
+        public virtual Employee Employee { get; set; }
     }
 }

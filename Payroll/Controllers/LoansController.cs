@@ -38,8 +38,6 @@ namespace Payroll.Controllers
 
         public async Task<IActionResult> Index(string employeeId, string status = "ACTIVE")
         {
-            //return View(await _context.Loan.Include(l=> l.LoanCodeNavigation).ToListAsync());
-            //EmployeeLoan empLoan = new EmployeeLoan();
             var empLoan = new EmployeeLoan();
             var companyId = HttpContext.Session.GetString("CompanyId");
             var employee = new Employee();

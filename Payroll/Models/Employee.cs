@@ -78,5 +78,15 @@ namespace Payroll.Models
         public virtual EmployeeDepository EmployeeDepository { get; set; }
         public virtual EmployeeOtherInfo EmployeeOtherInfo { get; set; }
         public virtual ICollection<Loan> Loan { get; set; }
+        public virtual ICollection<Earning> Earning { get; set; }
+        public virtual ICollection<Deduction> Deduction { get; set; }
+    }
+
+
+    public partial class ViewAutoCompleteModel
+    {
+        public string id { get; set; }
+        public string label { get; set; }
+        public string value { get; set; }
     }
 }

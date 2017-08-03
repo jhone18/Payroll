@@ -5,15 +5,13 @@
     "\\Payroll\\Controllers",
     "\\Payroll\\Data",
     "\\Payroll\\Models",
-    "\\Payroll\\Views",
-    "\\Payroll\\Views\\Loans",
-    "\\Payroll\\Views\\Roles",
-    "\\Payroll\\Views\\Shared",
-    "\\Payroll\\Views\\Users",
     "\\Payroll\\wwwroot",
-    "\\Payroll\\wwwroot\\css",
-    "\\Payroll\\wwwroot\\js"
+    "\\Payroll\\wwwroot\\js",
+    "\\Payroll\\wwwroot\\lib",
+    "\\Payroll\\wwwroot\\lib\\datatables",
+    "\\Payroll\\wwwroot\\lib\\datatables\\media",
+    "\\Payroll\\wwwroot\\lib\\datatables\\media\\js"
   ],
-  "SelectedNode": "\\Payroll\\Controllers\\LoansController.cs",
+  "SelectedNode": "\\Payroll\\wwwroot\\js\\site.js",
   "PreviewInSolutionExplorer": false
 }

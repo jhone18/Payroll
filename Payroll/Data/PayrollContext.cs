@@ -689,6 +689,12 @@ namespace Payroll.Data
                     .HasForeignKey(d => new { d.CompanyId, d.DedCode })
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Deduction_DeductionCode");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Deduction)
+                    .HasForeignKey(d => new { d.CompanyId, d.EmployeeId })
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Deduction_Employee");
             });
 
             modelBuilder.Entity<DeductionCode>(entity =>
@@ -978,6 +984,12 @@ namespace Payroll.Data
                     .HasForeignKey(d => new { d.CompanyId, d.EarnCode })
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Earning_EarningCode");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Earning)
+                    .HasForeignKey(d => new { d.CompanyId, d.EmployeeId })
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Earning_Employee");
             });
 
             modelBuilder.Entity<EarningCode>(entity =>

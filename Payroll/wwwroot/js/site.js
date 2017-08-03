@@ -247,10 +247,17 @@ $(document).ready(function () {
         minView: 2
     });
 
+    $("#loansFilterBy").change(function () {
+        $("#loanEmployees").val("");
+        $("#loanEmployeesId").val("");
+        $("#newLoan").hide();
+        $("#loanTable").DataTable().ajax.url("/Loans/GetDetails?empId=" + $("#loanEmployeesId").val() + "&status=" + $("#loansFilterBy").val()).load();
+    });
+
     $("#loanEmployees").autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/Loans/GetEmployees",
+                url: "/Loans/GetEmployees?status=" + $("#loansFilterBy").val(),
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 data: {
@@ -263,13 +270,15 @@ $(document).ready(function () {
         },
         minLength: 2,
         select: function (event, ui) {
-            //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
-            loansFilterByEmployeeStatus(ui.item.id, '', '/Loans/Index');
+            $("#newLoan").show();
+            $("#loanEmployeesId").val(ui.item.id);
+            $("#loanTable").DataTable().ajax.url("/Loans/GetDetails?empId=" + $("#loanEmployeesId").val() + "&status=" + $("#loansFilterBy").val()).load();
         }
     });
     $("#loanEmployees").focusout(function () {
         if ($(this).val() == '') {
-            window.location.href = "/Loans/Index";
+            $("#loanTable").DataTable().ajax.url("/Loans/GetDetails?empId=" + $("#loanEmployeesId").val() + "&status=" + $("#loansFilterBy").val()).load();
+            $("#newLoan").hide();
         }
     });
 
@@ -277,7 +286,7 @@ $(document).ready(function () {
         $("#loanEmployeesEntry").autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "/Loans/GetEmployees",
+                    url: "/Loans/GetEmployees?status=" + status,
                     dataType: "json",
                     contentType: 'application/json; charset=utf-8',
                     data: {
@@ -294,13 +303,12 @@ $(document).ready(function () {
             minLength: 2,
             select: function (event, ui) {
                 //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
-                $("#loanEmployeesEntryId").val(ui.item.id);
+                $("#loanEmployeesEntryId").val(ui.item.value);
             }
         });
         $("#loanEmployeesEntry").autocomplete("option", "appendTo", "#loanModal");
     });
-    var empId = $("#loanEmployeesId").val();
-    var status = $("#filterBy").val();
+
     $("#loanTable").dataTable({
         "processing": true, // for show progress bar
         "serverSide": true, // for process server side
@@ -308,7 +316,7 @@ $(document).ready(function () {
         "ordering": false,
         lengthChange: false,
         "ajax": {
-            "url": "/Loans/GetDetails?empId=" + empId + "&status=" + status,
+            "url": "/Loans/GetDetails?empId=" + $("#loanEmployeesId").val() + "&status=" + $("#filterBy").val(),
             "type": "GET",
             "contentType": 'application/json; charset=utf-8',
             "datatype": "json"
@@ -322,20 +330,13 @@ $(document).ready(function () {
             { "data": "htmlButtons", "name": "" }
         ]
     });
+
 });
 
 function selectedCompany(baseUrl) {
     var companyId = $("#loanCompanyCode").val();
     var companyName = $("#loanCompanyCode").text();
     location.href = baseUrl + "?companyId=" + companyId + "&companyName=" + companyName;
-}
-
-
-function loansFilterByEmployeeStatus(empId, status, baseURL) {
-    if (status == '')
-        window.location.href = baseURL + "?employeeId=" + empId + "&status=" + $('#filterBy').val();
-    else if (empId == '')
-        window.location.href = baseURL + "?employeeId=" + $('#loanEmployeesId').val() + "&status=" + status.value;
 }
 
 
@@ -356,13 +357,15 @@ function clearTextBox_Loans() {
     $('#loan1stPeriod').prop('checked', false);
     $('#loan2ndPeriod').prop('checked', false);
     $('#loanEmployeesEntry').prop("disabled", false);
+    $("#addLoan").show();
+    $("#updateLoan").hide();
 }
 
 function add_Loan() {
 
     var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
     var loan = {
-        EmployeeId: $("#loanEmployeesEntryId").val(),
+        EmployeeId: $("#loanEmployeesId").val(),
         LoanCode: $('#loanType').val(),
         Principal: $('#loanPrincipal').val(),
         WithInterest: $('#loanAmount').val(),
@@ -382,7 +385,7 @@ function add_Loan() {
         type: "POST",
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#loanTable").DataTable().ajax.reload();
             $('#loanModal').modal('hide');
         },
         error: function (errormessage) {
@@ -464,7 +467,7 @@ function update_Loan() {
         data: "loan=" + JSON.stringify(loan),
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#loanTable").DataTable().ajax.reload();
             $('#loanModal').modal('hide');
             clearTextBox_Loans();
         },
@@ -481,7 +484,7 @@ function delete_Loan(loanId) {
         data: "LoanId=" + loanId,
         dataType: "json",
         success: function (result) {
-            window.location.reload();
+            $("#loanTable").DataTable().ajax.reload();
             $('#deleteLoanModal' + loanId).modal('hide');
         },
         error: function (errormessage) {
@@ -495,7 +498,7 @@ function delete_Loan(loanId) {
 $(document).ready(function () {
     $("#payrollSearchText").on("keydown.autocomplete", function () {
 
-        var status = $("#filterBy").val();
+        var status = $("#payrollFilterBy").val();
         switch ($("#searchByType").val()) {
             case "Name":
                 $("#payrollSearchText").autocomplete({
@@ -602,7 +605,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#filterBy").change(function () {
+    $("#payrollFilterBy").change(function () {
         $("#payrollSearchText").val("");
         $("#payrollSearchTextId").val("");
         $("#payrollTabs").tabs();
@@ -610,58 +613,61 @@ $(document).ready(function () {
         $("#payrollTabs").tabs("disable");
     });
 
-    var empId = $("#payrollSearchText").val();
-    var status = $("#filterBy").val();
-    $("#incomeTable").dataTable({
-        "processing": true, // for show progress bar
-        "serverSide": true, // for process server side
-        "filter": false, // this is for disable filter (search box)
-        "ordering": false,
-        lengthChange: false,
-        "ajax": {
-            "url": "/Payroll/GetIncomeDetails?empId=" + empId + "&status=" + status,
-            "type": "GET",
-            "contentType": 'application/json; charset=utf-8',
-            "datatype": "json"
-        },
-        "columns": [
-            { "data": "earnDescr", "name": "Description" },
-            { "data": "tranDate", "name": "Tran Date" },
-            { "data": "amount", "name": "Amount" },
-            { "data": "recurStart", "name": "Recur Start" },
-            { "data": "recurEnd", "name": "Recur End" },
-            { "data": "frequency", "name": "Frequency" },
-            { "data": "htmlButtons", "name": "" }
-        ]
-    });
-
-    $("#deductionTable").dataTable({
-        "processing": true, // for show progress bar
-        "serverSide": true, // for process server side
-        "filter": false, // this is for disable filter (search box)
-        "ordering": false,
-        lengthChange: false,
-        "ajax": {
-            "url": "/Payroll/GetDeductionDetails?empId=" + empId + "&status=" + status,
-            "type": "GET",
-            "contentType": 'application/json; charset=utf-8',
-            "datatype": "json"
-        },
-        "columns": [
-            { "data": "dedDescr", "name": "Description" },
-            { "data": "tranDate", "name": "Tran Date" },
-            { "data": "dedAmount", "name": "Amount" },
-            { "data": "recurStart", "name": "Recur Start" },
-            { "data": "recurEnd", "name": "Recur End" },
-            { "data": "frequency", "name": "Frequency" },
-            { "data": "htmlButtons", "name": "" }
-        ]
-    });
-
     $("#searchEmployee").click(function () {
         if ($("#payrollSearchTextId").val() != '') {
             $("#payrollTabs").tabs("destroy");
             $("#payrollTabs").tabs();
+            $('#payrollTabs a[href="#timesheet"]').click();
+
+            var empId = $("#payrollSearchTextId").val();
+            var status = $("#payrollFilterBy").val();
+            $("#incomeTable").DataTable().destroy();
+            $("#incomeTable").dataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "ordering": false,
+                lengthChange: false,
+                "ajax": {
+                    "url": "/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status,
+                    "type": "GET",
+                    "contentType": 'application/json; charset=utf-8',
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "earnDescr", "name": "Description" },
+                    { "data": "tranDate", "name": "Tran Date" },
+                    { "data": "amount", "name": "Amount" },
+                    { "data": "recurStart", "name": "Recur Start" },
+                    { "data": "recurEnd", "name": "Recur End" },
+                    { "data": "frequency", "name": "Frequency" },
+                    { "data": "htmlButtons", "name": "" }
+                ]
+            });
+
+            $("#deductionTable").DataTable().destroy();
+            $("#deductionTable").dataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "ordering": false,
+                lengthChange: false,
+                "ajax": {
+                    "url": "/Payroll/GetDeductionDetails?empId=" + empId + "&status=" + status,
+                    "type": "GET",
+                    "contentType": 'application/json; charset=utf-8',
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "dedDescr", "name": "Description" },
+                    { "data": "tranDate", "name": "Tran Date" },
+                    { "data": "dedAmount", "name": "Amount" },
+                    { "data": "recurStart", "name": "Recur Start" },
+                    { "data": "recurEnd", "name": "Recur End" },
+                    { "data": "frequency", "name": "Frequency" },
+                    { "data": "htmlButtons", "name": "" }
+                ]
+            });
         }
         
     });
@@ -706,14 +712,12 @@ function clearTextBox_PayrollIncome() {
     $('#incomeFrequency').val("");
     $('#updatePayrollIncome').hide();
     $('#addPayrollIncome').show();
-    //$('#Name').css('border-color', 'lightgrey');
-    //$('#Age').css('border-color', 'lightgrey');
-    //$('#State').css('border-color', 'lightgrey');
-    //$('#Country').css('border-color', 'lightgrey');
+    $('#income1stPeriod').prop('checked', false);
+    $('#income2ndPeriod').prop('checked', false);
 }
 
 function add_PayrollIncome() {
-    var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
+    var frequency = ($('#income1stPeriod').is(':checked') ? '1' : '') + ($('#income2ndPeriod').is(':checked') ? '2' : '');
     var income = {
         EarnCode: $("#incomeDescription").val(),
         EmployeeId: $("#payrollSearchTextId").val(),
@@ -757,16 +761,16 @@ function show_PayrollIncome(incomeId) {
             $('#incomeRecurEnd').val(data.RecurEnd);
             switch (data.Frequency.trim()) {
                 case '1':
-                    $('#loan1stPeriod').prop('checked', true);
-                    $('#loan2ndPeriod').prop('checked', false);
+                    $('#income1stPeriod').prop('checked', true);
+                    $('#income2ndPeriod').prop('checked', false);
                     break;
                 case '2':
-                    $('#loan1stPeriod').prop('checked', false);
-                    $('#loan2ndPeriod').prop('checked', true);
+                    $('#income1stPeriod').prop('checked', false);
+                    $('#income2ndPeriod').prop('checked', true);
                     break;
                 case '12':
-                    $('#loan1stPeriod').prop('checked', true);
-                    $('#loan2ndPeriod').prop('checked', true);
+                    $('#income1stPeriod').prop('checked', true);
+                    $('#income2ndPeriod').prop('checked', true);
                     break;
             }
             $('#incomeModal').modal('show');
@@ -781,7 +785,7 @@ function show_PayrollIncome(incomeId) {
 }
 
 function update_PayrollIncome() {
-    var frequency = ($('#loan1stPeriod').is(':checked') ? '1' : '') + ($('#loan2ndPeriod').is(':checked') ? '2' : '');
+    var frequency = ($('#income1stPeriod').is(':checked') ? '1' : '') + ($('#income2ndPeriod').is(':checked') ? '2' : '');
     var income = {
         EarningId: $("#incomeId").val(),
         EmployeeId: $("#payrollSearchTextId").val(),

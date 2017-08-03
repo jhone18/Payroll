@@ -1,4 +1,4 @@
-@model Tuple<IEnumerable<Payroll.Models.LoanCode>, Payroll.Models.EmployeeLoan>
+@model Tuple<IEnumerable<Payroll.Models.LoanCode>>
 @{
     ViewData["Title"] = "Loan Entry";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -23,7 +23,7 @@
     </div>
     <div class="col-md-3">
         <label>Filter By</label>
-        <select id="filterBy" class="form-control" data-onload-select2 onchange="loansFilterByEmployeeStatus('',this,'@Url.Action("Index","Loans")')">
+        <select id="loansFilterBy" class="form-control">
             <option value="ACTIVE">ACTIVE</option>
             <option value="HOLD">HOLD</option>
             <option value="RESIGNED">RESIGNED</option>
@@ -88,7 +88,7 @@
     </div>
 </div>
 <div class="row">
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal" id="newLoan" onclick="clearTextBox_Loans();">New Loan</button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loanModal" id="newLoan" style="display:none" onclick="clearTextBox_Loans();">New Loan</button>
 </div>
 <div id="loanModal" class="modal fade" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -98,7 +98,7 @@
                 <h5 class="modal-title">Loan Entry</h5>
             </div>
             <div class="modal-body">
-                <div class="row">
+                @*<div class="row">
                     <div class="col-md-3">
                         <label>Employee</label>
                     </div>
@@ -106,7 +106,7 @@
                         <input type="text" class="form-control" id="loanEmployeesEntry" />
                         <input type="hidden" id="loanEmployeesEntryId" />
                     </div>
-                </div>
+                </div>*@
                 <div class="row">
                     <div class="col-md-3">
                         <label>Loan</label>
@@ -244,20 +244,3 @@
         </div>
     </div>
 </div>
-
-
-<script type="text/javascript">
-    $(function () {
-        //$("#employeeList option[value='" + '@Model.Item2.FilterByEmployeeId' + "']").prop("selected", "selected");
-        $("#loanEmployees").val('@Model.Item2.FilterByEmployeeName');
-        $("#loanEmployeesId").val('@Model.Item2.FilterByEmployeeId');
-
-        $("#filterBy option[value='" + '@Model.Item2.FilterByStatus' + "']").prop("selected", "selected");
-        if ($("#employeeList").val() == '') {
-            $("#newLoan").hide();
-        }
-        else {
-            $("#newLoan").show();
-        }
-    });
-</script>

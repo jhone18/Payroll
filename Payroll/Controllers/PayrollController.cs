@@ -150,7 +150,7 @@ namespace Payroll.Controllers
                 var earning = new List<Earning>();
                 if (string.IsNullOrEmpty(searchText))
                 {
-                    earning = await _context.Earning.Include(e => e.Employee).Include(e=> e.EarningCode).Where(e => e.Employee.EmployeeStatus == status).AsNoTracking().ToListAsync();
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = earning });
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace Payroll.Controllers
 
                 if (earning == null)
                 {
-                    return null;
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = earning });
                 }
                 var data = (from d in earning
                             let htmlButtons = "<a href = '#' onclick=show_PayrollIncome('" + d.EarningId + "'); class='item-action item-action-raised' title='Edit'>" +
@@ -192,7 +192,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Earning()));
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Earning() });
             }
         }
 

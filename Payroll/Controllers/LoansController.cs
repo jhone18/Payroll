@@ -36,21 +36,10 @@ namespace Payroll.Controllers
         //    return View(tupleView);
         //}
 
-        public async Task<IActionResult> Index(string employeeId, string status = "ACTIVE")
+        public async Task<IActionResult> Index()
         {
-            var empLoan = new EmployeeLoan();
-            var companyId = HttpContext.Session.GetString("CompanyId");
-            var employee = new Employee();
-
-            employee = await _context.Employee.AsNoTracking().SingleOrDefaultAsync(e => e.EmployeeId == employeeId);
             var loanCodes = await _context.LoanCode.AsNoTracking().ToListAsync();
-            empLoan.FilterByEmployeeId = employeeId;
-
-
-            empLoan.FilterByEmployeeId = employeeId;
-            empLoan.FilterByEmployeeName = employee == null ? string.Empty : employee.FullName;
-            empLoan.FilterByStatus = status;
-            var tupleView = new Tuple<IEnumerable<LoanCode>, EmployeeLoan>(loanCodes, empLoan);
+            var tupleView = new Tuple<IEnumerable<LoanCode>>(loanCodes);
 
             return View(tupleView);
         }
@@ -63,7 +52,7 @@ namespace Payroll.Controllers
                 var loan = new List<Loan>();
                 if (string.IsNullOrEmpty(empId))
                 {
-                    loan = await _context.Loan.Include(l => l.LoanCodeNavigation).Include(e=> e.Employee).Where(e=> e.Employee.EmployeeStatus == status).AsNoTracking().ToListAsync();
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = loan });
                 }
                 else
                 {
@@ -73,7 +62,7 @@ namespace Payroll.Controllers
 
                 if (loan == null)
                 {
-                    return null;
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = loan });
                 }
                 var data = (from d in loan
                             let htmlButtons = "<a href = '#' onclick=show_Loan('" + d.LoanId + "'); class='item-action item-action-raised' title='Edit'>" +
@@ -105,16 +94,16 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Loan()));
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Loan() });
             }
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetEmployees(string term)
+        public async Task<JsonResult> GetEmployees(string term, string status)
         {
             try
             {
-                var employees = await _context.Employee.AsNoTracking().Where(e => e.FullName.Contains(term)).ToListAsync();
+                var employees = await _context.Employee.AsNoTracking().Where(e => e.FullName.Contains(term) && e.EmployeeStatus == status).ToListAsync();
 
                 if (employees == null)
                 {

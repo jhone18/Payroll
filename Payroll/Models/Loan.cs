@@ -40,11 +40,4 @@ namespace Payroll.Models
         public virtual Employee Employee { get; set; }
         public virtual LoanCode LoanCodeNavigation { get; set; }
     }
-
-    public partial class EmployeeLoan
-    {
-        public string FilterByEmployeeId { get; set; }
-        public string FilterByEmployeeName { get; set; }
-        public string FilterByStatus { get; set; }
-    }
 }

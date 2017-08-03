@@ -116,8 +116,7 @@ namespace Payroll.Controllers
             }
             catch (Exception ex)
             {
-                Console.Write(ex.ToString());
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -152,7 +151,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -169,7 +168,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
     }

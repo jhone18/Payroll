@@ -96,7 +96,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Users()));
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Users() });
             }
         }
 
@@ -127,7 +127,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -161,7 +161,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -178,7 +178,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
     }

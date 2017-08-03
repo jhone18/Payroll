@@ -21,21 +21,6 @@ namespace Payroll.Controllers
             _context = context;
         }
 
-        // GET: Loans
-        //public async Task<IActionResult> Index()
-        //{
-        //    //return View(await _context.Loan.Include(l=> l.LoanCodeNavigation).ToListAsync());
-
-        //    //EmployeeLoan empLoan = new EmployeeLoan();
-        //    var employees = await _context.Employee.AsNoTracking().ToListAsync();
-        //    var loans = await _context.Loan.Include(l => l.LoanCodeNavigation).ToListAsync();
-
-
-        //    var tupleView = new Tuple<IEnumerable<Loan>, IEnumerable<Employee>>(loans, employees);
-
-        //    return View(tupleView);
-        //}
-
         public async Task<IActionResult> Index()
         {
             var loanCodes = await _context.LoanCode.AsNoTracking().ToListAsync();
@@ -116,13 +101,11 @@ namespace Payroll.Controllers
                               let value = c.FullName
                               select new { id, value, label });
 
-                Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(JsonConvert.SerializeObject(result));
             }
             catch
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonConvert.SerializeObject(new Employee()));
+                throw;
             }
         }
 
@@ -143,8 +126,7 @@ namespace Payroll.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return Json(JsonConvert.SerializeObject(new Loan()));
+                throw;
             }
         }
 
@@ -179,7 +161,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -224,7 +206,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -247,7 +229,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
     }

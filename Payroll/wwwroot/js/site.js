@@ -63,7 +63,7 @@ function add_Users() {
             $('#userModal').modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -88,7 +88,7 @@ function show_Users(userId) {
             $('#addUser').hide();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
     return false;
@@ -120,7 +120,7 @@ function update_Users() {
             $('#status').val("");
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -136,7 +136,7 @@ function delete_Users(userId) {
             $('#deleteUserModal' + userId).modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -188,7 +188,7 @@ function add_Role() {
             $('#roleModal').modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -210,7 +210,7 @@ function show_Role(roleId) {
             $('#addRole').hide();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
     return false;
@@ -236,7 +236,7 @@ function update_Role() {
             $('#roleShortDescription').val("");
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -252,7 +252,7 @@ function delete_Role(roleId) {
             $('#deleteUserModal' + roleId).modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -318,13 +318,13 @@ $(document).ready(function () {
                         response(JSON.parse(data).splice(0, 10));
                     },
                     error: function (err) {
-                        alert(err);
+                        showMessage(err);
                     }
                 });
             },
             minLength: 2,
             select: function (event, ui) {
-                //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                //showMessage("Selected: " + ui.item.value + " aka " + ui.item.id);
                 $("#loanEmployeesEntryId").val(ui.item.value);
             }
         });
@@ -411,7 +411,7 @@ function add_Loan() {
             $('#loanModal').modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -461,7 +461,7 @@ function show_Loan(loanId) {
             $('#addLoan').hide();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
     return false;
@@ -494,7 +494,7 @@ function update_Loan() {
             clearTextBox_Loans();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -510,7 +510,7 @@ function delete_Loan(loanId) {
             $('#deleteLoanModal' + loanId).modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -543,7 +543,7 @@ $(document).ready(function () {
                     },
                     minLength: 2,
                     select: function (event, ui) {
-                        //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                        //showMessage("Selected: " + ui.item.value + " aka " + ui.item.id);
                         //loansFilterByEmployeeStatus(ui.item.id, '', '/Payroll/Index');
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
@@ -566,7 +566,7 @@ $(document).ready(function () {
                     },
                     minLength: 2,
                     select: function (event, ui) {
-                        //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                        //showMessage("Selected: " + ui.item.value + " aka " + ui.item.id);
                         //loansFilterByEmployeeStatus(ui.item.id, '', '/Payroll/Index');
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
@@ -589,7 +589,7 @@ $(document).ready(function () {
                     },
                     minLength: 2,
                     select: function (event, ui) {
-                        //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                        //showMessage("Selected: " + ui.item.value + " aka " + ui.item.id);
                         //loansFilterByEmployeeStatus(ui.item.id, '', '/Payroll/Index');
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
@@ -612,7 +612,7 @@ $(document).ready(function () {
                     },
                     minLength: 2,
                     select: function (event, ui) {
-                        //alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+                        //showMessage("Selected: " + ui.item.value + " aka " + ui.item.id);
                         //loansFilterByEmployeeStatus(ui.item.id, '', '/Payroll/Index');
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
@@ -807,7 +807,7 @@ function add_PayrollIncome() {
             $('#incomeModal').modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -833,7 +833,7 @@ function add_PayrollDeduction() {
             $('#deductionModal').modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -874,7 +874,7 @@ function show_PayrollIncome(incomeId) {
             $('#addPayrollIncome').hide();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
     return false;
@@ -916,7 +916,7 @@ function show_PayrollDeduction(deductionId) {
             $('#addPayrollDeduction').hide();
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
     return false;
@@ -951,7 +951,7 @@ function update_PayrollIncome() {
             $('#incomeFrequency').val("");
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -984,7 +984,7 @@ function update_PayrollDeduction() {
             $('#deductionFrequency').val("");
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -1000,7 +1000,7 @@ function delete_PayrollIncome(incomeId) {
             $('#deleteIncomeModal' + incomeId).modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -1016,7 +1016,7 @@ function delete_PayrollDeduction(deductionId) {
             $('#deleteDeductionModal' + deductionId).modal('hide');
         },
         error: function (errormessage) {
-            alert(errormessage.responseText);
+            showMessage(errormessage.statusText);
         }
     });
 }
@@ -1045,16 +1045,17 @@ function update_PayrollTimeSheet() {
                 data: "timeSheet=" + JSON.stringify(timeSheet) + "&employeeId=" + $("#payrollSearchTextId").val(),
                 dataType: "json",
                 success: function (result) {
-                    $("#successModal").modal('show'); 
+                    if (result.success == true) {
+                        showMessage("TimeSheet Successfully saved.");
+                    }
                 },
                 error: function (errormessage) {
-                    alert(errormessage.responseText);
+                    showMessage(errormessage.statusText);
                 }
             });
-            
         },
         error: function (err) {
-            alert(err.responseText);
+            showMessage(err.statusText);
         }
     });
 }
@@ -1074,7 +1075,7 @@ function showTimeSheet(employeeId) {
             });
         },
         error: function (err) {
-            alert(err.responseText);
+            showMessage(err.statusText);
         }
     });
 }
@@ -1104,16 +1105,17 @@ function update_PayrollOTSheet() {
                 data: "otSheet=" + JSON.stringify(otSheet) + "&employeeId=" + $("#payrollSearchTextId").val(),
                 dataType: "json",
                 success: function (result) {
-                    $("#successModal").modal('show'); 
+                    if (result.success == true) {
+                        showMessage("OT Sheet Successfully saved.");
+                    }
                 },
                 error: function (errormessage) {
-                    alert(errormessage.responseText);
+                    showMessage(errormessage.statusText);
                 }
             });
-            $("#successModal").modal('show');
         },
         error: function (err) {
-            alert(err.responseText);
+            showMessage(err.statusText);
         }
     });
 }
@@ -1134,8 +1136,13 @@ function showOTSheet(employeeId) {
             });
         },
         error: function (err) {
-            alert(err.responseText);
+            showMessage(err.statusText);
         }
     });
+}
+
+function showMessage(message) {
+    $("#modalMessage").html("<h4>" + message + "</h4>");
+    $("#messageModal").modal('show');
 }
 //============================= Payroll =====================================//

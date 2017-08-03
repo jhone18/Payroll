@@ -52,13 +52,11 @@ namespace Payroll.Controllers
                               let value = c.DeptDescr
                               select new { id, value, label });
 
-                Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(JsonConvert.SerializeObject(result));
             }
             catch
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonConvert.SerializeObject(new ViewAutoCompleteModel()));
+                throw;
             }
         }
 
@@ -80,13 +78,11 @@ namespace Payroll.Controllers
                               let value = c.Description
                               select new { id, value, label });
 
-                Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(JsonConvert.SerializeObject(result));
             }
             catch
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonConvert.SerializeObject(new ViewAutoCompleteModel()));
+                throw;
             }
         }
 
@@ -108,13 +104,11 @@ namespace Payroll.Controllers
                               let value = c.EmployeeId
                               select new { id, value, label });
 
-                Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(JsonConvert.SerializeObject(result));
             }
             catch
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonConvert.SerializeObject(new ViewAutoCompleteModel()));
+                throw;
             }
         }
 
@@ -136,13 +130,11 @@ namespace Payroll.Controllers
                               let value = c.FullName
                               select new { id, value, label });
 
-                Response.StatusCode = (int)HttpStatusCode.OK;
                 return Json(JsonConvert.SerializeObject(result));
             }
             catch
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(JsonConvert.SerializeObject(new ViewAutoCompleteModel()));
+                throw;
             }
         }
 
@@ -269,7 +261,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Earning()));
+                throw;
             }
         }
 
@@ -287,7 +279,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Earning()));
+                throw;
             }
         }
 
@@ -305,7 +297,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Timesheet2()));
+                throw;
             }
         }
 
@@ -323,7 +315,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Otsheet()));
+                throw;
             }
         }
 
@@ -341,7 +333,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Timesheet2Code()));
+                throw;
             }
         }
 
@@ -359,7 +351,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject(new Otcode()));
+                throw;
             }
         }
 
@@ -418,7 +410,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -446,7 +438,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -506,7 +498,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -541,8 +533,11 @@ namespace Payroll.Controllers
                         foreach (var ts in otSheetEntity)
                         {
                             var otSheetData = _context.Otsheet.Where(u => u.EmployeeId == employeeId && u.Otcode == ts.Otcode).FirstOrDefault();
-                            _context.Entry(otSheetData).State = EntityState.Deleted;
-                            await _context.SaveChangesAsync();
+                            if (otSheetData != null)
+                            {
+                                _context.Entry(otSheetData).State = EntityState.Deleted;
+                                await _context.SaveChangesAsync();
+                            }
 
                             var otSheetToUpdate = _context.Otsheet.Where(u => u.EmployeeId == employeeId && u.Otcode == ts.Otcode).FirstOrDefault();
                             if (otSheetToUpdate == null)
@@ -574,7 +569,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -607,7 +602,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -639,7 +634,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -661,7 +656,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
 
@@ -677,7 +672,7 @@ namespace Payroll.Controllers
             }
             catch
             {
-                return Json(new { Success = false });
+                throw;
             }
         }
     }

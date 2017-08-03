@@ -27,8 +27,10 @@ namespace Payroll.Controllers
         {
             var earningCodes = await _context.EarningCode.AsNoTracking().ToListAsync();
             var deductionCodes = await _context.DeductionCode.AsNoTracking().ToListAsync();
+            var timeSheetCodes = await _context.Timesheet2Code.AsNoTracking().OrderBy(t=> t.DisplayOrder).ToListAsync();
+            var otSheetCodes = await _context.Otcode.AsNoTracking().OrderBy(t => t.DisplayOrder).ToListAsync();
 
-            var tupleView = new Tuple<IEnumerable<EarningCode>, IEnumerable<DeductionCode>>(earningCodes, deductionCodes);
+            var tupleView = new Tuple<IEnumerable<EarningCode>, IEnumerable<DeductionCode>, IEnumerable<Timesheet2Code>, IEnumerable<Otcode>>(earningCodes, deductionCodes, timeSheetCodes, otSheetCodes);
             return View(tupleView);
         }
 
@@ -289,8 +291,92 @@ namespace Payroll.Controllers
             }
         }
 
+        public async Task<JsonResult> DetailsTimeSheet(string employeeId)
+        {
+            try
+            {
+                var timeSheet = await _context.Timesheet2.Include(t=> t.Timesheet2Code).Where(e => e.EmployeeId == employeeId).AsNoTracking().ToListAsync();
+                if (timeSheet == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(timeSheet, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects }));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Timesheet2()));
+            }
+        }
+
+        public async Task<JsonResult> DetailsOTSheet(string employeeId)
+        {
+            try
+            {
+                var otSheet = await _context.Otsheet.Include(o=> o.OtcodeNavigation).Where(e => e.EmployeeId == employeeId).AsNoTracking().ToListAsync();
+                if (otSheet == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(otSheet, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects }));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Otsheet()));
+            }
+        }
+
+        public async Task<JsonResult> GetTimeSheetCodes()
+        {
+            try
+            {
+                var timeSheetCodes = await _context.Timesheet2Code.AsNoTracking().OrderBy(t => t.DisplayOrder).ToListAsync();
+                if (timeSheetCodes == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(timeSheetCodes));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Timesheet2Code()));
+            }
+        }
+
+        public async Task<JsonResult> GetOTSheetCodes()
+        {
+            try
+            {
+                var otSheetCodes = await _context.Otcode.AsNoTracking().OrderBy(t => t.DisplayOrder).ToListAsync();
+                if (otSheetCodes == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(otSheetCodes));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Otcode()));
+            }
+        }
+
         // GET: Payroll/Create
         public ActionResult Create()
+        {
+            return View();
+        }
+
+        // GET: Payroll/TimeSheet
+        public ActionResult TimeSheet()
+        {
+            return View();
+        }
+
+        // GET: Payroll/OTSheet
+        public ActionResult OTSheet()
         {
             return View();
         }
@@ -368,6 +454,128 @@ namespace Payroll.Controllers
         public ActionResult Edit(int id)
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditTimeSheet(string timeSheet, string employeeId)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var tsData = await _context.Timesheet2.AsNoTracking().Where(t => t.EmployeeId == employeeId).ToListAsync();
+                    if (tsData == null)
+                    {
+                        List<Timesheet2> timeSheetEntity = JsonConvert.DeserializeObject<List<Timesheet2>>(timeSheet);
+                        foreach (var ts in timeSheetEntity)
+                        {
+                            ts.EmployeeId = employeeId;
+                            ts.CompanyId = HttpContext.Session.GetString("CompanyId");
+                            _context.Add(ts);
+                            await _context.SaveChangesAsync();
+                        }
+                        
+                    }
+                    else
+                    {
+                        List<Timesheet2> timeSheetEntity = JsonConvert.DeserializeObject<List<Timesheet2>>(timeSheet);
+                        foreach (var ts in timeSheetEntity)
+                        {
+                            var timeSheetToUpdate = _context.Timesheet2.Where(u => u.EmployeeId == employeeId && u.TsCode == ts.TsCode).FirstOrDefault();
+
+                            if (timeSheetToUpdate == null)
+                            {
+                                ts.EmployeeId = employeeId;
+                                ts.CompanyId = HttpContext.Session.GetString("CompanyId");
+                                _context.Add(ts);
+                            }
+                            else
+                            {
+                                timeSheetToUpdate.TsDays = ts.TsDays;
+                                timeSheetToUpdate.TsHrs = ts.TsHrs;
+                                timeSheetToUpdate.TsMins = ts.TsMins;
+                                _context.Entry(timeSheetToUpdate).State = EntityState.Modified;
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                return Json(new { Success = false });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditOTSheet(string otSheet, string employeeId)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var tsData = await _context.Otsheet.AsNoTracking().Where(t => t.EmployeeId == employeeId).ToListAsync();
+                    if (tsData == null)
+                    {
+                        List<Otsheet> otSheetEntity = JsonConvert.DeserializeObject<List<Otsheet>>(otSheet);
+                        foreach (var ts in otSheetEntity)
+                        {
+                            ts.EmployeeId = employeeId;
+                            ts.CompanyId = HttpContext.Session.GetString("CompanyId");
+                            ts.CreatedBy = "admin";
+                            ts.CreatedDate = DateTime.Now;
+                            ts.LastUpdBy = "admin";
+                            ts.LastUpdDate = DateTime.Now;
+                            _context.Add(ts);
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                    else
+                    {
+                        List<Otsheet> otSheetEntity = JsonConvert.DeserializeObject<List<Otsheet>>(otSheet);
+                        foreach (var ts in otSheetEntity)
+                        {
+                            var otSheetData = _context.Otsheet.Where(u => u.EmployeeId == employeeId && u.Otcode == ts.Otcode).FirstOrDefault();
+                            _context.Entry(otSheetData).State = EntityState.Deleted;
+                            await _context.SaveChangesAsync();
+
+                            var otSheetToUpdate = _context.Otsheet.Where(u => u.EmployeeId == employeeId && u.Otcode == ts.Otcode).FirstOrDefault();
+                            if (otSheetToUpdate == null)
+                            {
+                                ts.EmployeeId = employeeId;
+                                ts.CompanyId = HttpContext.Session.GetString("CompanyId");
+                                ts.CreatedBy = "admin";
+                                ts.CreatedDate = DateTime.Now;
+                                ts.LastUpdBy = "admin";
+                                ts.LastUpdDate = DateTime.Now;
+                                _context.Add(ts);
+                            }
+                            else
+                            {
+                                otSheetToUpdate.Othours = ts.Othours;
+                                otSheetToUpdate.Ot8hours = ts.Ot8hours;
+                                otSheetToUpdate.Otndhours = ts.Otndhours;
+                                otSheetToUpdate.Otnd2hours = ts.Otnd2hours;
+                                otSheetToUpdate.LastUpdBy = "admin";
+                                otSheetToUpdate.LastUpdDate = DateTime.Now;
+                                _context.Entry(otSheetToUpdate).State = EntityState.Modified;
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                return Json(new { Success = false });
+            }
         }
 
         // POST: Payroll/Edit/5

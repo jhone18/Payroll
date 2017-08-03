@@ -1,0 +1,39 @@
+@model IEnumerable<Payroll.Models.Timesheet2Code>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div class="row">
+    <div class="col-md-4">
+        &nbsp;
+    </div>
+    <div class="col-md-2">
+        <label>Days</label>
+    </div>
+    <div class="col-md-2">
+        <label>Hours</label>
+    </div>
+    <div class="col-md-2">
+        <label>Minutes</label>
+    </div>
+</div>
+@foreach (var item in Model)
+{
+
+    <div class="row">
+        <div class="col-md-4">
+            <label>@Html.DisplayFor(modelItem => item.TsDescr)</label>
+            <input type="hidden" id="@("ts" + item.DisplayOrder + "Code")" value="@item.TsCode.Trim()" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ts" + item.DisplayOrder + "Days")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ts" + item.DisplayOrder + "Hours")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ts" + item.DisplayOrder + "Minutes")" />
+        </div>
+    </div>
+
+}

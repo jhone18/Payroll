@@ -1,0 +1,42 @@
+@model IEnumerable<Payroll.Models.Otcode>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-md-4">
+        &nbsp;
+    </div>
+    <div class="col-md-2">
+        <label>First 8</label>
+    </div>
+    <div class="col-md-2">
+        <label>ND1</label>
+    </div>
+    <div class="col-md-2">
+        <label>Beyond 8</label>
+    </div>
+    <div class="col-md-2">
+        <label>ND2</label>
+    </div>
+</div>
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <label>@Html.DisplayFor(modelItem => item.Otdescription)</label>
+            <input type="hidden" value="@item.Otcode1" id="@("ot" + item.DisplayOrder + "Code")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ot" + item.DisplayOrder + "First8")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ot" + item.DisplayOrder + "ND1")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ot" + item.DisplayOrder + "Beyond8")" />
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="@("ot" + item.DisplayOrder + "ND2")" />
+        </div>
+    </div>
+}

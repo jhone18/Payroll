@@ -518,6 +518,10 @@ function delete_Loan(loanId) {
 //============================= Loans =====================================//
 //============================= Payroll =====================================//
 $(document).ready(function () {
+
+    $('#timesheet :input').attr('disabled', true);
+    $('#updatePayroll').attr('disabled', true);
+
     $("#payrollSearchText").on("keydown.autocomplete", function () {
 
         var status = $("#payrollFilterBy").val();
@@ -624,6 +628,9 @@ $(document).ready(function () {
             $("#payrollTabs").tabs();
             $('#payrollTabs a[href="#timesheet"]').click();
             $("#payrollTabs").tabs("disable");
+            $('#timesheet :input').attr('disabled', true);
+            $('#updatePayroll').attr('disabled', true);
+            $('#timesheet :input').val("");
         }
     });
 
@@ -633,6 +640,9 @@ $(document).ready(function () {
         $("#payrollTabs").tabs();
         $('#payrollTabs a[href="#timesheet"]').click();
         $("#payrollTabs").tabs("disable");
+        $('#timesheet :input').attr('disabled', true);
+        $('#updatePayroll').attr('disabled', true);
+        $('#timesheet :input').val("");
     });
 
     $("#searchEmployee").click(function () {
@@ -641,8 +651,15 @@ $(document).ready(function () {
             $("#payrollTabs").tabs();
             $('#payrollTabs a[href="#timesheet"]').click();
 
+            $('#timesheet :input').attr('disabled', false);
+            $('#updatePayroll').attr('disabled', false);
+
             var empId = $("#payrollSearchTextId").val();
             var status = $("#payrollFilterBy").val();
+
+            showTimeSheet(empId);
+            showOTSheet(empId);
+
             $("#incomeTable").DataTable().destroy();
             $("#incomeTable").dataTable({
                 "processing": true, // for show progress bar
@@ -1000,6 +1017,124 @@ function delete_PayrollDeduction(deductionId) {
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
+        }
+    });
+}
+
+function update_PayrollTimeSheet() {
+    var timeSheet = [];
+    $.ajax({
+        url: "/Payroll/GetTimeSheetCodes",
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            data.forEach(function (item, index) {
+                var ts = {
+                    TsCode: $("#ts" + item.DisplayOrder + "Code").val(),
+                    TsDays: $("#ts" + item.DisplayOrder + "Days").val(),
+                    TsHrs: $("#ts" + item.DisplayOrder + "Hours").val(),
+                    TsMins: $("#ts" + item.DisplayOrder + "Minutes").val()
+                }
+                timeSheet.push(ts);
+            });
+            $.ajax({
+                url: "/Payroll/EditTimeSheet",
+                type: "POST",
+                data: "timeSheet=" + JSON.stringify(timeSheet) + "&employeeId=" + $("#payrollSearchTextId").val(),
+                dataType: "json",
+                success: function (result) {
+                    $("#successModal").modal('show'); 
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            
+        },
+        error: function (err) {
+            alert(err.responseText);
+        }
+    });
+}
+
+function showTimeSheet(employeeId) {
+    $.ajax({
+        url: "/Payroll/DetailsTimeSheet/?employeeId=" + employeeId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            data.forEach(function (item, index) {
+                $("#ts" + item.Timesheet2Code.DisplayOrder + "Days").val(item.TsDays);
+                $("#ts" + item.Timesheet2Code.DisplayOrder + "Hours").val(item.TsHrs);
+                $("#ts" + item.Timesheet2Code.DisplayOrder + "Minutes").val(item.TsMins);
+            });
+        },
+        error: function (err) {
+            alert(err.responseText);
+        }
+    });
+}
+
+function update_PayrollOTSheet() {
+    var otSheet = [];
+    $.ajax({
+        url: "/Payroll/GetOTSheetCodes",
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            data.forEach(function (item, index) {
+                var ts = {
+                    Otcode: $("#ot" + item.DisplayOrder + "Code").val(),
+                    Othours: $("#ot" + item.DisplayOrder + "First8").val(),
+                    Ot8hours: $("#ot" + item.DisplayOrder + "ND1").val(),
+                    Otndhours: $("#ot" + item.DisplayOrder + "Beyond8").val(),
+                    Otnd2hours: $("#ot" + item.DisplayOrder + "ND2").val()
+                }
+                otSheet.push(ts);
+            });
+            $.ajax({
+                url: "/Payroll/EditOTSheet",
+                type: "POST",
+                data: "otSheet=" + JSON.stringify(otSheet) + "&employeeId=" + $("#payrollSearchTextId").val(),
+                dataType: "json",
+                success: function (result) {
+                    $("#successModal").modal('show'); 
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            $("#successModal").modal('show');
+        },
+        error: function (err) {
+            alert(err.responseText);
+        }
+    });
+}
+
+function showOTSheet(employeeId) {
+    $.ajax({
+        url: "/Payroll/DetailsOTSheet/?employeeId=" + employeeId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            data.forEach(function (item, index) {
+                $("#ot" + item.OtcodeNavigation.DisplayOrder + "First8").val(item.Othours);
+                $("#ot" + item.OtcodeNavigation.DisplayOrder + "ND1").val(item.Otndhours);
+                $("#ot" + item.OtcodeNavigation.DisplayOrder + "Beyond8").val(item.Ot8hours);
+                $("#ot" + item.OtcodeNavigation.DisplayOrder + "ND2").val(item.Otnd2hours);
+            });
+        },
+        error: function (err) {
+            alert(err.responseText);
         }
     });
 }

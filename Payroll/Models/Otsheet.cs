@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Payroll.Models
 {
     public partial class Otsheet
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long OtsheetId { get; set; }
+        [Key]
         public string CompanyId { get; set; }
+        [Key]
         public string EmployeeId { get; set; }
+        [Key]
         public string Otcode { get; set; }
         public string CostCenter { get; set; }
         public decimal? Othours { get; set; }

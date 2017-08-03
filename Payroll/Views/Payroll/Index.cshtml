@@ -1,4 +1,4 @@
-@model Tuple<IEnumerable<Payroll.Models.EarningCode>, IEnumerable<Payroll.Models.DeductionCode>>
+@model Tuple<IEnumerable<Payroll.Models.EarningCode>, IEnumerable<Payroll.Models.DeductionCode>, IEnumerable<Payroll.Models.Timesheet2Code>, IEnumerable<Payroll.Models.Otcode>>
 @{
     ViewData["Title"] = "Payroll Transactions";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,298 +40,15 @@
             </ul>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade active in" id="timesheet">
-                    <div class="row">
-                        <div class="col-md-4">
-                            &nbsp;
-                        </div>
-                        <div class="col-md-2">
-                            <label>Days</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Hours</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Minutes</label>
-                        </div>
+                    @Html.Partial("TimeSheet", Model.Item3)
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollTimeSheet();">Update</button>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Regular</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsRegularDays" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsRegularHours" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsRegularMinutes" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Absences</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsAbsencesDays" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsAbsencesHours"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsAbsencesMinutes"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Tardy</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsTardyDays"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsTardyHours"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsTardyMinutes"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Undertime</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsUndertimeDays"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsUndertimeHours"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsUndertimeMinutes"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Regular ND1</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="tsUndertimeDays"/>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Regular ND2</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Paid Holiday</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Sick Leave</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Vacation Leave</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>LWOP</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    
                 </div>
                 <div class="tab-pane fade" id="otSheet">
-                    <div class="row">
-                        <div class="col-md-4">
-                            &nbsp;
-                        </div>
-                        <div class="col-md-2">
-                            <label>First 8</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label>ND1</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Beyond 8</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label>ND2</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Regular OT</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Rest Day OT</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Legal Holiday</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Legal Rest Day</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Special Holiday</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Special RestDay</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Non Tax OT</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" />
-                        </div>
+                    @Html.Partial("OTSheet", Model.Item4)
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollOTSheet();">Update</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="income">
@@ -411,8 +128,22 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_Payroll();">Update</button>
+
+            <div id="successModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h5 class="modal-title">Message</h5>
+                        </div>
+                        <div class="modal-body">
+                            <h4>TimeSheet Successfully saved.</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

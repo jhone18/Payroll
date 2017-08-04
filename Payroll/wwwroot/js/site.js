@@ -55,9 +55,10 @@ function add_Users() {
     };
     $.ajax({
         url: "/Users/Create",
-        data: "user=" + JSON.stringify(user),
+        data: JSON.stringify(user),
         type: "POST",
         dataType: "json",
+        contentType: 'application/json; charset=UTF-8',
         success: function (result) {
             $("#usersTable").DataTable().ajax.reload();
             $('#userModal').modal('hide');

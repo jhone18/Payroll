@@ -109,17 +109,16 @@ namespace Payroll.Controllers
 
         // POST: Users/Create
         [HttpPost]
-        public JsonResult Create(string user)
+        public JsonResult Create([FromBody] Users user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    Users userObj = JsonConvert.DeserializeObject<Users>(user);
-                    userObj.Application = "PAYROLL";//ViewBag("Application");
+                    //Users userObj = JsonConvert.DeserializeObject<Users>(user);
+                    user.Application = "PAYROLL";//ViewBag("Application");
                     // TODO: Add update logic here
-                    //_context.Update(user);
-                    _context.Add(userObj);
+                    _context.Add(user);
                     _context.SaveChanges();
                 }
 

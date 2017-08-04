@@ -22,7 +22,7 @@ $(function () {
             { "data": "userId", "name": "User Id" },
             { "data": "userFname", "name": "First Name" },
             { "data": "userLname", "name": "Last Name" },
-            { "data": "activated", "name": "Date Activated" },
+            { "data": "activated", "name": "Date Activated", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
             { "data": "status", "name": "Status" },
             { "data": "htmlButtons", "name": "" }
         ]
@@ -81,7 +81,7 @@ function show_Users(userId) {
             $('#firstName').val(data.UserFname);
             $('#lastName').val(data.UserLname);
             $('#password').val(data.Password);
-            $('#dateActivated').val(data.Activated);
+            $('#dateActivated').val(moment(data.Activated).format("MM/DD/YYYY"));
             $('#status').val(data.Status.trim());
             $('#userModal').modal('show');
             $('#updateUser').show();
@@ -157,9 +157,13 @@ $(function () {
             "contentType": 'application/json; charset=utf-8',
             "datatype": "json"
         },
+        "columnDefs": [
+            { "targets": [0], "visible": false }
+        ],
         "columns": [
             { "data": "roleId", "name": "Role Id" },
-            { "data": "shortDesc", "name": "Description" },
+            { "data": "shortDesc", "name": "Short Description" },
+            { "data": "description", "name": "Description" },
             { "data": "htmlButtons", "name": "" }
         ]
     });
@@ -249,7 +253,7 @@ function delete_Role(roleId) {
         dataType: "json",
         success: function (result) {
             $("#roleTable").DataTable().ajax.reload();
-            $('#deleteUserModal' + roleId).modal('hide');
+            $('#deleteRoleModal' + roleId).modal('hide');
         },
         error: function (errormessage) {
             showMessage(errormessage.statusText);
@@ -346,9 +350,9 @@ $(document).ready(function () {
         "columns": [
             { "data": "loanCode", "name": "Loan Code" },
             { "data": "loanDescr", "name": "Description" },
-            { "data": "principal", "name": "Loan Principal" },
-            { "data": "withInterest", "name": "Loan Amount" },
-            { "data": "approvedDate", "name": "Date Approved" },
+            { "data": "principal", "name": "Loan Principal", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+            { "data": "withInterest", "name": "Loan Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+            { "data": "approvedDate", "name": "Date Approved", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
             { "data": "htmlButtons", "name": "" }
         ]
     });
@@ -438,8 +442,8 @@ function show_Loan(loanId) {
             $('#loanTotalPayment').val(data.TotalPayments);
             $('#loanBalance').val(data.Balance);
             $('#loanAmortization').val(data.Amortization);
-            $('#loanDateGranted').val(data.ApprovedDate);
-            $('#loanDateStart').val(data.StartDate);
+            $('#loanDateGranted').val(moment(data.ApprovedDate).format("MM/DD/YYYY"));
+            $('#loanDateStart').val(moment(data.StartDate).format("MM/DD/YYYY"));
             $('#loanRemarks').val(data.Remarks);
             $('#loanHoldPayment').prop('checked', data.Hold);
             switch (data.Frequency.trim()) {
@@ -625,34 +629,29 @@ $(document).ready(function () {
         if ($(this).val() == '') {
             $("#payrollSearchText").val("");
             $("#payrollSearchTextId").val("");
-            $("#payrollTabs").tabs();
-            $('#payrollTabs a[href="#timesheet"]').click();
             $("#payrollTabs").tabs("disable");
-            $('#timesheet :input').attr('disabled', true);
-            $('#updatePayroll').attr('disabled', true);
-            $('#timesheet :input').val("");
+            reloadPayrollTable();
+            disableInputFields();
         }
     });
 
     $("#payrollFilterBy").change(function () {
         $("#payrollSearchText").val("");
         $("#payrollSearchTextId").val("");
-        $("#payrollTabs").tabs();
-        $('#payrollTabs a[href="#timesheet"]').click();
         $("#payrollTabs").tabs("disable");
-        $('#timesheet :input').attr('disabled', true);
-        $('#updatePayroll').attr('disabled', true);
-        $('#timesheet :input').val("");
+        reloadPayrollTable();
+        disableInputFields();
     });
+
 
     $("#searchEmployee").click(function () {
         if ($("#payrollSearchTextId").val() != '') {
-            $("#payrollTabs").tabs("destroy");
-            $("#payrollTabs").tabs();
-            $('#payrollTabs a[href="#timesheet"]').click();
+            //$("#payrollTabs").tabs("destroy");
+            //$("#payrollTabs").tabs();
+            //$('#payrollTabs a[href="#timesheet"]').click();
 
-            $('#timesheet :input').attr('disabled', false);
-            $('#updatePayroll').attr('disabled', false);
+            $("#payrollTabs").tabs("enable");
+            enableInputFields();
 
             var empId = $("#payrollSearchTextId").val();
             var status = $("#payrollFilterBy").val();
@@ -660,59 +659,69 @@ $(document).ready(function () {
             showTimeSheet(empId);
             showOTSheet(empId);
 
-            $("#incomeTable").DataTable().destroy();
-            $("#incomeTable").dataTable({
-                "processing": true, // for show progress bar
-                "serverSide": true, // for process server side
-                "filter": false, // this is for disable filter (search box)
-                "ordering": false,
-                lengthChange: false,
-                "ajax": {
-                    "url": "/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status,
-                    "type": "GET",
-                    "contentType": 'application/json; charset=utf-8',
-                    "datatype": "json"
-                },
-                "columns": [
-                    { "data": "earnDescr", "name": "Description" },
-                    { "data": "tranDate", "name": "Tran Date" },
-                    { "data": "amount", "name": "Amount" },
-                    { "data": "recurStart", "name": "Recur Start" },
-                    { "data": "recurEnd", "name": "Recur End" },
-                    { "data": "frequency", "name": "Frequency" },
-                    { "data": "htmlButtons", "name": "" }
-                ]
-            });
+            if (!$.fn.DataTable.isDataTable('#incomeTable')) {
+                $("#incomeTable").dataTable({
+                    "processing": true, // for show progress bar
+                    "serverSide": true, // for process server side
+                    "filter": false, // this is for disable filter (search box)
+                    "ordering": false,
+                    lengthChange: false,
+                    "ajax": {
+                        "url": "/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status,
+                        "type": "GET",
+                        "contentType": 'application/json; charset=utf-8',
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "earnDescr", "name": "Description" },
+                        { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "amount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+                        { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "frequency", "name": "Frequency" },
+                        { "data": "htmlButtons", "name": "" }
+                    ]
+                });
+            }
+            else {
+                $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
+            }
 
-            $("#deductionTable").DataTable().destroy();
-            $("#deductionTable").dataTable({
-                "processing": true, // for show progress bar
-                "serverSide": true, // for process server side
-                "filter": false, // this is for disable filter (search box)
-                "ordering": false,
-                lengthChange: false,
-                "ajax": {
-                    "url": "/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status,
-                    "type": "GET",
-                    "contentType": 'application/json; charset=utf-8',
-                    "datatype": "json"
-                },
-                "columns": [
-                    { "data": "dedDescr", "name": "Description" },
-                    { "data": "tranDate", "name": "Tran Date" },
-                    { "data": "dedAmount", "name": "Amount" },
-                    { "data": "recurStart", "name": "Recur Start" },
-                    { "data": "recurEnd", "name": "Recur End" },
-                    { "data": "frequency", "name": "Frequency" },
-                    { "data": "htmlButtons", "name": "" }
-                ]
-            });
+            if (!$.fn.DataTable.isDataTable('#deductionTable')) {
+                $("#deductionTable").dataTable({
+                    "processing": true, // for show progress bar
+                    "serverSide": true, // for process server side
+                    "filter": false, // this is for disable filter (search box)
+                    "ordering": false,
+                    lengthChange: false,
+                    "ajax": {
+                        "url": "/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status,
+                        "type": "GET",
+                        "contentType": 'application/json; charset=utf-8',
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "dedDescr", "name": "Description" },
+                        { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "dedAmount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+                        { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                        { "data": "frequency", "name": "Frequency" },
+                        { "data": "htmlButtons", "name": "" }
+                    ]
+                });
+            }
+            else {
+                $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
+            }
         }
-        
+
     });
+
 
     $('#incomeTranDate').datetimepicker({
         format: 'mm/dd/yyyy',
+        defaultDate: new Date(),
         minView: 2
     });
 
@@ -747,8 +756,37 @@ $(document).ready(function () {
 
     $("#searchByType").hide();
     $("#payrollTabs").tabs();
-    $("#payrollTabs").tabs("disable");
+    //$("#payrollTabs").tabs("disable");
 });
+
+function reloadPayrollTable() {
+    var empId = $("#payrollSearchTextId").val();
+    var status = $("#payrollFilterBy").val();
+    if ($.fn.DataTable.isDataTable('#incomeTable')) {
+        $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
+    }
+    if ($.fn.DataTable.isDataTable('#deductionTable')) {
+        $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
+    }
+}
+
+function disableInputFields() {
+    $('#timesheet :input').prop('disabled', true);
+    $('#otSheet :input').prop('disabled', true);
+    $('#timesheet :input').val("");
+    $('#otSheet :input').val("");
+    $('#updatePayroll').prop('disabled', true);
+    $('#newPayrollIncome').prop('disabled', true);
+    $('#newPayrollDeduction').prop('disabled', true);
+}
+
+function enableInputFields() {
+    $('#timesheet :input').prop('disabled', false);
+    $('#otSheet :input').prop('disabled', false);
+    $('#updatePayroll').prop('disabled', false);
+    $('#newPayrollIncome').prop('disabled', false);
+    $('#newPayrollDeduction').prop('disabled', false);
+}
 
 function hidePayrollUpdate() {
     $("#updatePayroll").hide();
@@ -851,10 +889,10 @@ function show_PayrollIncome(incomeId) {
             $("#incomeId").val(data.EarningId);
             $("#incomeCode").val(data.EarnCode);
             $('#incomeDescription').val(data.EarnCode);
-            $('#incomeTranDate').val(data.TranDate);
+            $('#incomeTranDate').val(moment(data.TranDate).format("MM/DD/YYYY"));
             $('#incomeAmount').val(data.Amount);
-            $('#incomeRecurStart').val(data.RecurStart);
-            $('#incomeRecurEnd').val(data.RecurEnd);
+            $('#incomeRecurStart').val(moment(data.RecurStart).format("MM/DD/YYYY"));
+            $('#incomeRecurEnd').val(moment(data.RecurEnd).format("MM/DD/YYYY"));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#income1stPeriod').prop('checked', true);
@@ -893,10 +931,10 @@ function show_PayrollDeduction(deductionId) {
             $("#deductionId").val(data.DeductionId);
             $("#deductionCode").val(data.DedCode);
             $('#deductionDescription').val(data.DedCode);
-            $('#deductionTranDate').val(data.TranDate);
+            $('#deductionTranDate').val(moment(data.TranDate).format("MM/DD/YYYY"));
             $('#deductionAmount').val(data.DedAmount);
-            $('#deductionRecurStart').val(data.RecurStart);
-            $('#deductionRecurEnd').val(data.RecurEnd);
+            $('#deductionRecurStart').val(moment(data.RecurStart).format("MM/DD/YYYY"));
+            $('#deductionRecurEnd').val(moment(data.RecurEnd).format("MM/DD/YYYY"));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#deduction1stPeriod').prop('checked', true);

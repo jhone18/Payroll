@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Payroll.Models
 {
@@ -8,12 +9,15 @@ namespace Payroll.Models
         public long DeductionId { get; set; }
         public string CompanyId { get; set; }
         public string EmployeeId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? TranDate { get; set; }
         public string DedCode { get; set; }
         public decimal DedAmount { get; set; }
         public decimal? PsaDedAmount { get; set; }
         public string Frequency { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? RecurStart { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? RecurEnd { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

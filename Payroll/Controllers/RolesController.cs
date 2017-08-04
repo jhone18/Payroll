@@ -58,7 +58,7 @@ namespace Payroll.Controllers
                     return null;
                 }
                 var data = (from d in role
-                            let htmlButtons = "<a href = '#' onclick=show_Roles('" + d.RoleId + "'); class='item-action item-action-raised' title='Edit'>" +
+                            let htmlButtons = "<a href = '#' onclick=show_Role('" + d.RoleId + "'); class='item-action item-action-raised' title='Edit'>" +
                                             "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>" +
                                         "</a>" +
                                         "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteRoleModal" + d.RoleId + "'>" +
@@ -81,7 +81,7 @@ namespace Payroll.Controllers
                                                 "</div>" +
                                             "</div>" +
                                         "</div>"
-                            select new { d.RoleId, d.ShortDesc, htmlButtons });//JsonConvert.SerializeObject(role);
+                            select new { d.RoleId, d.ShortDesc, d.Description, htmlButtons });//JsonConvert.SerializeObject(role);
 
                 return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data.Skip(start).Take(length) });
             }

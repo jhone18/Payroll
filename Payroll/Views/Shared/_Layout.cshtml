@@ -89,16 +89,17 @@
     </div>
 
     <environment names="Development">
+        <script src="~/lib/moment/moment.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-ui.js"></script>
         <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
-        <script src="~/lib/moment/moment.js"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-datetimepicker.js"></script>
         <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
         <script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
     </environment>
     <environment names="Staging,Production">
+        <script src="~/lib/moment/moment.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
@@ -114,12 +115,10 @@
         <script src="~/js/site.min.js" asp-append-version="true" type="text/javascript"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-ui.js"></script>
         <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
-        <script src="~/lib/moment/moment.js"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-datetimepicker.js"></script>
         <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
         <script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
     </environment>
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>

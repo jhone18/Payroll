@@ -556,6 +556,33 @@ $(document).ready(function () {
         }
     });
 
+    $("#employeeTable").dataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "ordering": false,
+        lengthChange: false,
+        destroy: true,
+        "ajax": {
+            "url": "/Payroll/GetEmployees?status=" + $("#payrollFilterBy").val(),
+            "type": "GET",
+            "contentType": 'application/json; charset=utf-8',
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "employeeId", "name": "Employee Id" },
+            { "data": "lastName", "name": "Last Name" },
+            { "data": "firstName", "name": "First Name" }
+        ]
+    });
+    $('#employeeTable').on('click', 'tbody tr', function () {
+        console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
+        $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
+        $("#searchEmployee").click();
+        $('#employeeTable tbody tr').removeAttr("style");
+        $(this).css("background-color", "#deedf7");
+    });
+
     $("#searchByType").on("change", function () {
 
         var status = $("#payrollFilterBy").val();
@@ -581,6 +608,33 @@ $(document).ready(function () {
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
                 });
+
+                $("#employeeTable").dataTable({
+                    "processing": true, // for show progress bar
+                    "serverSide": true, // for process server side
+                    "filter": false, // this is for disable filter (search box)
+                    "ordering": false,
+                    lengthChange: false,
+                    destroy: true,
+                    "ajax": {
+                        "url": "/Payroll/GetEmployees?status=" + status,
+                        "type": "GET",
+                        "contentType": 'application/json; charset=utf-8',
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "employeeId", "name": "Employee Id" },
+                        { "data": "lastName", "name": "Last Name" },
+                        { "data": "firstName", "name": "First Name" }
+                    ]
+                });
+                $('#employeeTable').on('click', 'tbody tr', function () {
+                    console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
+                    $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
+                    $("#searchEmployee").click();
+                    $('#employeeTable tbody tr').removeAttr("style");
+                    $(this).css("background-color", "#deedf7");
+                });
                 break;
             case "EmpID":
                 showSearchText();
@@ -603,6 +657,33 @@ $(document).ready(function () {
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
                 });
+
+                $("#employeeTable").dataTable({
+                    "processing": true, // for show progress bar
+                    "serverSide": true, // for process server side
+                    "filter": false, // this is for disable filter (search box)
+                    "ordering": false,
+                    lengthChange: false,
+                    destroy: true,
+                    "ajax": {
+                        "url": "/Payroll/GetEmployees?status=" + status,
+                        "type": "GET",
+                        "contentType": 'application/json; charset=utf-8',
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "employeeId", "name": "Employee Id" },
+                        { "data": "lastName", "name": "Last Name" },
+                        { "data": "firstName", "name": "First Name" }
+                    ]
+                });
+                $('#employeeTable').on('click', 'tbody tr', function () {
+                    console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
+                    $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
+                    $("#searchEmployee").click();
+                    $('#employeeTable tbody tr').removeAttr("style");
+                    $(this).css("background-color", "#deedf7");
+                });
                 break;
             case "PayCode":
                 showSearchList();
@@ -618,25 +699,33 @@ $(document).ready(function () {
 
                 $("#payrollSearchList").on("change", function () {
                     var payCode = $(this).val();
-                        $("#employeeTable").dataTable({
-                            "processing": true, // for show progress bar
-                            "serverSide": true, // for process server side
-                            "filter": false, // this is for disable filter (search box)
-                            "ordering": false,
-                            lengthChange: false,
-                            destroy: true,
-                            "ajax": {
-                                "url": "/Payroll/GetEmployeesByPayCode?payCode=" + payCode + "&status=" + status,
-                                "type": "GET",
-                                "contentType": 'application/json; charset=utf-8',
-                                "datatype": "json"
-                            },
-                            "columns": [
-                                { "data": "employeeId", "name": "Employee Id" },
-                                { "data": "lastName", "name": "Last Name" },
-                                { "data": "firstName", "name": "First Name" }
-                            ]
-                        });
+                    $("#employeeTable").dataTable({
+                        "processing": true, // for show progress bar
+                        "serverSide": true, // for process server side
+                        "filter": false, // this is for disable filter (search box)
+                        "ordering": false,
+                        lengthChange: false,
+                        destroy: true,
+                        "ajax": {
+                            "url": "/Payroll/GetEmployeesByPayCode?payCode=" + payCode + "&status=" + status,
+                            "type": "GET",
+                            "contentType": 'application/json; charset=utf-8',
+                            "datatype": "json"
+                        },
+                        "columns": [
+                            { "data": "employeeId", "name": "Employee Id" },
+                            { "data": "lastName", "name": "Last Name" },
+                            { "data": "firstName", "name": "First Name" }
+                        ]
+                    });
+
+                    $('#employeeTable').on('click', 'tbody tr', function () {
+                        console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
+                        $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
+                        $("#searchEmployee").click();
+                        $('#employeeTable tbody tr').removeAttr("style");
+                        $(this).css("background-color", "#deedf7");
+                    });
                 });
                 break;
             case "Department":
@@ -654,25 +743,32 @@ $(document).ready(function () {
 
                 $("#payrollSearchList").on("change", function () {
                     var departmentId = $(this).val();
-                        $("#employeeTable").dataTable({
-                            "processing": true, // for show progress bar
-                            "serverSide": true, // for process server side
-                            "filter": false, // this is for disable filter (search box)
-                            "ordering": false,
-                            lengthChange: false,
-                            destroy: true,
-                            "ajax": {
-                                "url": "/Payroll/GetEmployeesByDepartment?departmentId=" + departmentId + "&status=" + status,
-                                "type": "GET",
-                                "contentType": 'application/json; charset=utf-8',
-                                "datatype": "json"
-                            },
-                            "columns": [
-                                { "data": "employeeId", "name": "Employee Id" },
-                                { "data": "lastName", "name": "Last Name" },
-                                { "data": "firstName", "name": "First Name" }
-                            ]
-                        });
+                    $("#employeeTable").dataTable({
+                        "processing": true, // for show progress bar
+                        "serverSide": true, // for process server side
+                        "filter": false, // this is for disable filter (search box)
+                        "ordering": false,
+                        lengthChange: false,
+                        destroy: true,
+                        "ajax": {
+                            "url": "/Payroll/GetEmployeesByDepartment?departmentId=" + departmentId + "&status=" + status,
+                            "type": "GET",
+                            "contentType": 'application/json; charset=utf-8',
+                            "datatype": "json"
+                        },
+                        "columns": [
+                            { "data": "employeeId", "name": "Employee Id" },
+                            { "data": "lastName", "name": "Last Name" },
+                            { "data": "firstName", "name": "First Name" }
+                        ]
+                    });
+                    $('#employeeTable').on('click', 'tbody tr', function () {
+                        console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
+                        $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
+                        $("#searchEmployee").click();
+                        $('#employeeTable tbody tr').removeAttr("style");
+                        $(this).css("background-color", "#deedf7");
+                    });
                 });
                 break;
         }
@@ -708,61 +804,53 @@ $(document).ready(function () {
             showTimeSheet(empId);
             showOTSheet(empId);
 
-            if (!$.fn.DataTable.isDataTable('#incomeTable')) {
-                $("#incomeTable").dataTable({
-                    "processing": true, // for show progress bar
-                    "serverSide": true, // for process server side
-                    "filter": false, // this is for disable filter (search box)
-                    "ordering": false,
-                    lengthChange: false,
-                    "ajax": {
-                        "url": "/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status,
-                        "type": "GET",
-                        "contentType": 'application/json; charset=utf-8',
-                        "datatype": "json"
-                    },
-                    "columns": [
-                        { "data": "earnDescr", "name": "Description" },
-                        { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "amount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
-                        { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "frequency", "name": "Frequency" },
-                        { "data": "htmlButtons", "name": "" }
-                    ]
-                });
-            }
-            else {
-                $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
-            }
+            $("#incomeTable").dataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "ordering": false,
+                lengthChange: false,
+                destroy: true,
+                "ajax": {
+                    "url": "/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status,
+                    "type": "GET",
+                    "contentType": 'application/json; charset=utf-8',
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "earnDescr", "name": "Description" },
+                    { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "amount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "frequency", "name": "Frequency" },
+                    { "data": "htmlButtons", "name": "" }
+                ]
+            });
 
-            if (!$.fn.DataTable.isDataTable('#deductionTable')) {
-                $("#deductionTable").dataTable({
-                    "processing": true, // for show progress bar
-                    "serverSide": true, // for process server side
-                    "filter": false, // this is for disable filter (search box)
-                    "ordering": false,
-                    lengthChange: false,
-                    "ajax": {
-                        "url": "/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status,
-                        "type": "GET",
-                        "contentType": 'application/json; charset=utf-8',
-                        "datatype": "json"
-                    },
-                    "columns": [
-                        { "data": "dedDescr", "name": "Description" },
-                        { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "dedAmount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
-                        { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-                        { "data": "frequency", "name": "Frequency" },
-                        { "data": "htmlButtons", "name": "" }
-                    ]
-                });
-            }
-            else {
-                $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
-            }
+            $("#deductionTable").dataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "ordering": false,
+                lengthChange: false,
+                destroy: true,
+                "ajax": {
+                    "url": "/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status,
+                    "type": "GET",
+                    "contentType": 'application/json; charset=utf-8',
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "dedDescr", "name": "Description" },
+                    { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "dedAmount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+                    { "data": "frequency", "name": "Frequency" },
+                    { "data": "htmlButtons", "name": "" }
+                ]
+            });
         }
 
     });
@@ -843,6 +931,8 @@ function disableInputFields() {
 }
 
 function enableInputFields() {
+    $('#timesheet :input').val("");
+    $('#otSheet :input').val("");
     $('#timesheet :input').prop('disabled', false);
     $('#otSheet :input').prop('disabled', false);
     $('#updatePayroll').prop('disabled', false);

@@ -10,15 +10,18 @@
     <div class="row">
         <div class="col-md-6">
             <label>Employee</label>
-            <select class="form-control" onchange="loadSearchByType(this);" id="searchByType" style="display:none">
+            <select class="form-control" id="searchByType">
                 <option selected value="Name">Name</option>
                 <option value="EmpID">Employee Id</option>
                 <option value="PayCode">PayCode</option>
                 <option value="Department">Deparment</option>
             </select>
             <input type="text" class="form-control" placeholder="Search" id="payrollSearchText" />
+            <select class="form-control" id="payrollSearchList" style="display:none"></select>
             <input type="hidden" id="payrollSearchTextId"/>
-            <input type="button" class="btn btn-link" value="Search" id="searchEmployee" />
+            <button type="button" class="btn btn-link" value="Search" id="searchEmployee">
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
         </div>
         <div class="col-md-6">
             <label>Show Employee with Status </label>
@@ -30,118 +33,133 @@
         </div>
     </div>
     <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="bs-component" id="payrollTabs">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#timesheet" data-toggle="tab" onclick="showPayrollUpdate();">TimeSheet</a></li>
-                <li><a href="#otSheet" data-toggle="tab" onclick="showPayrollUpdate();">OT Sheet</a></li>
-                <li><a href="#income" data-toggle="tab" onclick="hidePayrollUpdate();">Income</a></li>
-                <li><a href="#deduction" data-toggle="tab" onclick="hidePayrollUpdate();">Deduction</a></li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade active in" id="timesheet">
-                    @Html.Partial("TimeSheet", Model.Item3)
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollTimeSheet();">Update</button>
+    <div class="navbar-left col-md-4">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="employeeTable">
+                <thead>
+                    <tr>
+                        <th>Employee Id</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="navbar-left col-md-8">
+        <div class="row">
+            <div class="bs-component" id="payrollTabs">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#timesheet" data-toggle="tab" onclick="showPayrollUpdate();">TimeSheet</a></li>
+                    <li><a href="#otSheet" data-toggle="tab" onclick="showPayrollUpdate();">OT Sheet</a></li>
+                    <li><a href="#income" data-toggle="tab" onclick="hidePayrollUpdate();">Income</a></li>
+                    <li><a href="#deduction" data-toggle="tab" onclick="hidePayrollUpdate();">Deduction</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="timesheet">
+                        @Html.Partial("TimeSheet", Model.Item3)
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollTimeSheet();">Update</button>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="otSheet">
-                    @Html.Partial("OTSheet", Model.Item4)
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollOTSheet();">Update</button>
+                    <div class="tab-pane fade" id="otSheet">
+                        @Html.Partial("OTSheet", Model.Item4)
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="updatePayroll" onclick="update_PayrollOTSheet();">Update</button>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="income">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="incomeTable">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Tran Date</th>
-                                    <th>Amount</th>
-                                    <th>Recur Start</th>
-                                    <th>Recur End</th>
-                                    <th>Frequency</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div id="incomeModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h5 class="modal-title">Update Income Entry</h5>
-                                </div>
-                                <div class="modal-body">
-                                    @Html.Partial("Income", Model.Item1)
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="addPayrollIncome" onclick="return add_PayrollIncome();">Add</button>
-                                    <button type="button" class="btn btn-primary" id="updatePayrollIncome" style="display:none;" onclick="update_PayrollIncome();">Update</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="tab-pane fade" id="income">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="incomeTable">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Tran Date</th>
+                                        <th>Amount</th>
+                                        <th>Recur Start</th>
+                                        <th>Recur End</th>
+                                        <th>Frequency</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div id="incomeModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h5 class="modal-title">Update Income Entry</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        @Html.Partial("Income", Model.Item1)
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="addPayrollIncome" onclick="return add_PayrollIncome();">Add</button>
+                                        <button type="button" class="btn btn-primary" id="updatePayrollIncome" style="display:none;" onclick="update_PayrollIncome();">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="footer">
+                            <input type="button" class="btn btn-primary" id="newPayrollIncome" data-toggle="modal" data-target="#incomeModal" onclick="clearTextBox_PayrollIncome();" value="New">
+                        </div>
                     </div>
-                    <div class="footer">
-                        <input type="button" class="btn btn-primary" id="newPayrollIncome" data-toggle="modal" data-target="#incomeModal" onclick="clearTextBox_PayrollIncome();" value="New">
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="deduction">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="deductionTable">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Tran Date</th>
-                                    <th>Amount</th>
-                                    <th>Recur Start</th>
-                                    <th>Recur End</th>
-                                    <th>Frequency</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div id="deductionModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h5 class="modal-title">Update Deduction Entry</h5>
-                                </div>
-                                <div class="modal-body">
-                                    @Html.Partial("Deduction", Model.Item2)
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="addPayrollDeduction" onclick="return add_PayrollDeduction();">Add</button>
-                                    <button type="button" class="btn btn-primary" id="updatePayrollDeduction" style="display:none;" onclick="update_PayrollDeduction();">Update</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="tab-pane fade" id="deduction">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="deductionTable">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Tran Date</th>
+                                        <th>Amount</th>
+                                        <th>Recur Start</th>
+                                        <th>Recur End</th>
+                                        <th>Frequency</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div id="deductionModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h5 class="modal-title">Update Deduction Entry</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        @Html.Partial("Deduction", Model.Item2)
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="addPayrollDeduction" onclick="return add_PayrollDeduction();">Add</button>
+                                        <button type="button" class="btn btn-primary" id="updatePayrollDeduction" style="display:none;" onclick="update_PayrollDeduction();">Update</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="footer">
-                        <input type="button" class="btn btn-primary" id="newPayrollDeduction" data-toggle="modal" data-target="#deductionModal" onclick="clearTextBox_PayrollDeduction();" value="New">
+                        <div class="footer">
+                            <input type="button" class="btn btn-primary" id="newPayrollDeduction" data-toggle="modal" data-target="#deductionModal" onclick="clearTextBox_PayrollDeduction();" value="New">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="messageModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Message</h5>
-                </div>
-                <div class="modal-body" id="modalMessage">
-                    <h4>TimeSheet Successfully saved.</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div id="messageModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Message</h5>
+                    </div>
+                    <div class="modal-body" id="modalMessage">
+                        <h4>TimeSheet Successfully saved.</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>

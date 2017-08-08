@@ -35,11 +35,11 @@ namespace Payroll.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetDepartment(string term)
+        public async Task<JsonResult> GetDepartment()
         {
             try
             {
-                var department = await _context.Department.AsNoTracking().Where(e => e.DeptDescr.Contains(term)).ToListAsync();
+                var department = await _context.Department.AsNoTracking().ToListAsync();
 
                 if (department == null)
                 {
@@ -61,11 +61,11 @@ namespace Payroll.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPayCode(string term)
+        public async Task<JsonResult> GetPayCode()
         {
             try
             {
-                var payCode = await _context.PayCode.AsNoTracking().Where(e => e.PayCode1.Contains(term)).ToListAsync();
+                var payCode = await _context.PayCode.AsNoTracking().ToListAsync();
 
                 if (payCode == null)
                 {
@@ -87,7 +87,7 @@ namespace Payroll.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetEmployeesId(string term)
+        public async Task<JsonResult> GetEmployeesById(string status, string term)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace Payroll.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetEmployees(string term, string status)
+        public async Task<JsonResult> GetEmployeesByName(string status, string term)
         {
             try
             {
@@ -131,6 +131,47 @@ namespace Payroll.Controllers
                               select new { id, value, label });
 
                 return Json(JsonConvert.SerializeObject(result));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetEmployeesByDepartment(int draw, int start, int length, string departmentId, string status)
+        {
+            try
+            {
+                var employees = await _context.Employee.AsNoTracking().Where(e=> e.Department == departmentId).ToListAsync();
+
+                if (employees == null)
+                {
+                    return null;
+                }
+
+                var recordsTotal = employees.Count();
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = employees.Skip(start).Take(length) });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetEmployeesByPayCode(int draw, int start, int length, string payCode, string status)
+        {
+            try
+            {
+                var employees = await _context.Employee.AsNoTracking().Where(e=> e.PayCode == payCode).ToListAsync();
+
+                if (employees == null)
+                {
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Employee() });
+                }
+                var recordsTotal = employees.Count();
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = employees.Skip(start).Take(length) });
             }
             catch
             {

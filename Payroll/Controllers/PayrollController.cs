@@ -160,6 +160,27 @@ namespace Payroll.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> GetEmployeesID(int draw, int start, int length, string employeeId, string status)
+        {
+            try
+            {
+                var employees = await _context.Employee.AsNoTracking().Where(e => e.EmployeeId == employeeId && e.EmployeeStatus == status).ToListAsync();
+
+                if (employees == null)
+                {
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Employee() });
+                }
+
+                var recordsTotal = employees.Count();
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = employees.Skip(start).Take(length) });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetEmployeesByDepartment(int draw, int start, int length, string departmentId, string status)
         {
             try

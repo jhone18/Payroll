@@ -10801,10 +10801,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jaime\\documents\\visual studio 2017\\Projects\\Payroll\\Payroll\\Payroll.csproj",
+      "projectUniqueName": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
       "projectName": "Payroll",
-      "projectPath": "C:\\Users\\Jaime\\documents\\visual studio 2017\\Projects\\Payroll\\Payroll\\Payroll.csproj",
-      "outputPath": "C:\\Users\\Jaime\\documents\\visual studio 2017\\Projects\\Payroll\\Payroll\\obj\\",
+      "projectPath": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
+      "outputPath": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"

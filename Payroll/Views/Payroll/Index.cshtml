@@ -6,7 +6,7 @@
 
 <h2>Payroll Transactions</h2>
 
-<form class="form-inline">
+<div class="form-inline">
     <div class="row">
         <div class="col-md-6">
             <label>Employee</label>
@@ -87,18 +87,20 @@
                         <div id="incomeModal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h5 class="modal-title">Update Income Entry</h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        @Html.Partial("Income", Model.Item1)
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="addPayrollIncome" onclick="return add_PayrollIncome();">Add</button>
-                                        <button type="button" class="btn btn-primary" id="updatePayrollIncome" style="display:none;" onclick="update_PayrollIncome();">Update</button>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
+                                    <form method="post" id="incomeForm">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h5 class="modal-title">Update Income Entry</h5>
+                                        </div>
+                                        <div class="form-group modal-body">
+                                            @Html.Partial("Income", Model.Item1)
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" id="addPayrollIncome" onclick="return add_PayrollIncome();">Add</button>
+                                            <button type="button" class="btn btn-primary" id="updatePayrollIncome" style="display:none;" onclick="update_PayrollIncome();">Update</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -164,4 +166,4 @@
             </div>
         </div>
     </div>
-</form>
+</div>

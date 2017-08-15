@@ -2,14 +2,14 @@
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<form class="form-inline">
-    <div class="row">
+<div class="form-horizontal">
+    <div class="form-group row col-md-12">
         <input type="hidden" id="incomeId"/>
         <div class="col-md-3">
             <label>Description</label>
         </div>
-        <div>
-            <select class="form-control" id="incomeDescription">
+        <div class="col-md-7">
+            <select class="form-control" id="incomeDescription" name="incomeDescription">
                 @foreach (var item in Model)
                 {
                     <option value="@item.EarnCode">@Html.DisplayFor(modelItem => item.EarnDescr)</option>
@@ -19,39 +19,39 @@
             <input type="hidden" id="incomeCode"/>
         </div>
     </div>
-    <div class="row">
+    <div class="form-group row col-md-12">
         <div class="col-md-3">
             <label>Tran Date</label>
         </div>
-        <div class="input-group date" id="incomeTranDatePicker">
-            <input type="text" class="form-control" id="incomeTranDate" />
+        <div class="col-md-7 input-group date" id="incomeTranDatePicker" style="padding-left:15px;padding-right:15px;">
+            <input type="text" class="form-control" id="incomeTranDate" name="incomeTranDate" />
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
             </span>
         </div>
     </div>
-    <div class="row">
+    <div class="form-group row col-md-12">
         <div class="col-md-3">
             <label>Amount</label>
         </div>
-        <div>
-            <input type="text" class="form-control" id="incomeAmount" />
+        <div class="col-md-7">
+            <input type="text" class="form-control" id="incomeAmount" name="incomeAmount" />
         </div>
     </div>
-    <div class="panel panel-default">
+    <div class="form-group panel panel-default col-md-12">
         <label>Recurring</label>
-        <div class="row">
+        <div class="form-group row col-md-12">
             <div class="col-md-3">
                 <label>Recur Start</label>
             </div>
             <div class="input-group date" id="incomeRecurStartPicker">
-                <input type="text" class="form-control" id="incomeRecurStart" />
+                <input type="text" class="form-control" id="incomeRecurStart"  />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
                 </span>
             </div>
         </div>
-        <div class="row">
+        <div class="form-group row col-md-12">
             <div class="col-md-3">
                 <label>Recur End</label>
             </div>
@@ -62,7 +62,7 @@
                 </span>
             </div>
         </div>
-        <div class="row">
+        <div class="form-group row col-md-12">
             <div class="panel-heading panel-heading-extended">
                 <div class="row">
                     <div class="col-md-5">
@@ -91,4 +91,4 @@
             </div>
         </div>
     </div>
-</form>
+</div>

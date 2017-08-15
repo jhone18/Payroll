@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="~/css/site.css" />
         <link href="~/lib/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
         <link href="~/lib/bootstrap-ui/dist/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+        <link href="~/lib/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet" />
     </environment>
     <environment names="Staging,Production">
         @*<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -22,6 +23,7 @@
   @*      <link rel="stylesheet" href="~/lib/bootstrap-ui/dist/css/bootstrap-ui.css"/>*@
         <link href="~/lib/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
         <link href="~/lib/bootstrap-ui/dist/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+        <link href="~/lib/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet" />
     </environment>
     @Html.Raw(JavaScriptSnippet.FullScript)
     <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -46,6 +48,8 @@
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-ui.js"></script>
         <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-datetimepicker.js"></script>
+        <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
+        <script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -64,6 +68,8 @@
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-ui.js"></script>
         <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
         <script src="~/lib/bootstrap-ui/dist/js/bootstrap-datetimepicker.js"></script>
+        <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
+        <script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)

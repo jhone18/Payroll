@@ -584,7 +584,7 @@ $(document).ready(function () {
                         $("#payrollSearchTextId").val(ui.item.id);
                     }
                 });
-                
+
                 populateEmployeeTable("/Payroll/GetEmployees?status=" + status);
                 selectDataTable();
                 break;
@@ -714,6 +714,9 @@ $(document).ready(function () {
         defaultDate: new Date(),
         minView: 2,
         autoclose: true
+    }).on("change", function () {
+        $("#incomeTranDate").focus();
+        setTimeout(function () { $("#incomeAmount").focus(); }, 10);
     });
 
 
@@ -721,6 +724,13 @@ $(document).ready(function () {
         format: 'mm/dd/yyyy',
         minView: 2,
         autoclose: true
+    }).on("change", function () {
+        var incomeRecurStart = $('#incomeRecurStart').val();
+        var incomeRecurEnd = $('#incomeRecurEnd').val();
+        if (incomeRecurStart != '') {
+            $("#incomeRecurStart").parent().removeClass("has-error");
+            $('#incomeRecurStart').prop("title", "");
+        }
     });
 
 
@@ -728,6 +738,14 @@ $(document).ready(function () {
         format: 'mm/dd/yyyy',
         minView: 2,
         autoclose: true
+    }).on("change", function () {
+        var incomeRecurStart = $('#incomeRecurStart').val();
+        var incomeRecurEnd = $('#incomeRecurEnd').val();
+
+        if (incomeRecurEnd != '') {
+            $("#incomeRecurEnd").parent().removeClass("has-error");
+            $('#incomeRecurEnd').prop("title", "");
+        }
     });
 
     $('#deductionTranDatePicker').datetimepicker({
@@ -741,6 +759,9 @@ $(document).ready(function () {
         format: 'mm/dd/yyyy',
         minView: 2,
         autoclose: true
+    }).on("change", function () {
+        $("#deductionRecurStart").parent().removeClass("has-error");
+        $('#deductionRecurStart').prop("title", "");
     });
 
 
@@ -748,7 +769,43 @@ $(document).ready(function () {
         format: 'mm/dd/yyyy',
         minView: 2,
         autoclose: true
+    }).on("change", function () {
+        $("#deductionRecurEnd").parent().removeClass("has-error");
+        $('#deductionRecurEnd').prop("title", "");
     });
+
+    //$("#incomeForm").validate({
+    //    rules: {
+    //        incomeDescription: "required",
+    //        incomeTranDate: "required",
+    //        incomeAmount: "required"
+    //    },
+    //    messages: {
+    //        incomeDescription: "Please select Description",
+    //        incomeTranDate: "Please enter Tran Date",
+    //        incomeAmount: "Please enter Amount",
+    //    },
+    //    errorElement: "em",
+    //    errorPlacement: function (error, element) {
+    //        // Add the `help-block` class to the error element
+    //        error.addClass("help-block");
+
+    //        if (element.prop("type") === "checkbox") {
+    //            error.insertAfter(element.parent("label"));
+    //        } else if (element.siblings(".input-group-addon").length > 0) {
+    //            error.insertAfter(element.siblings(".input-group-addon"));
+    //        } else {
+    //            error.insertAfter(element);
+    //        }
+    //    },
+    //    highlight: function (element, errorClass, validClass) {
+    //        $(element).parents(".col-md-7").addClass("has-error").removeClass("has-success");
+    //    },
+    //    unhighlight: function (element, errorClass, validClass) {
+    //        $(element).parents(".col-md-7").addClass("has-success").removeClass("has-error");
+    //        //$(element).siblings(".input-group-addon").css("display", "inline-table");
+    //    }
+    //});
 });
 
 function populatePayroll() {
@@ -772,8 +829,8 @@ function populatePayroll() {
             { "data": "earnDescr", "name": "Description" },
             { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
             { "data": "amount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
-            { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-            { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+            { "data": "recurStart", "name": "Recur Start", "render": function (d) { if (d == null) { return '' } else { return moment(d).format("MM/DD/YYYY"); } } },
+            { "data": "recurEnd", "name": "Recur End", "render": function (d) { if (d == null) { return '' } else { return moment(d).format("MM/DD/YYYY"); } } },
             { "data": "frequency", "name": "Frequency" },
             { "data": "htmlButtons", "name": "" }
         ]
@@ -796,8 +853,8 @@ function populatePayroll() {
             { "data": "dedDescr", "name": "Description" },
             { "data": "tranDate", "name": "Tran Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
             { "data": "dedAmount", "name": "Amount", "render": $.fn.dataTable.render.number(',', '.', 2, '') },
-            { "data": "recurStart", "name": "Recur Start", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
-            { "data": "recurEnd", "name": "Recur End", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+            { "data": "recurStart", "name": "Recur Start", "render": function (d) { if (d == null) { return '' } else { return moment(d).format("MM/DD/YYYY"); } } },
+            { "data": "recurEnd", "name": "Recur End", "render": function (d) { if (d == null) { return '' } else { return moment(d).format("MM/DD/YYYY"); } } },
             { "data": "frequency", "name": "Frequency" },
             { "data": "htmlButtons", "name": "" }
         ]
@@ -830,12 +887,13 @@ function selectDataTable() {
     $('#employeeTable').on('click', 'tbody tr', function () {
         console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
         $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
-        
+
         $('#employeeTable tbody tr').removeAttr("style");
         $(this).css("background-color", "#deedf7");
 
         var empId = $("#payrollSearchTextId").val();
         var status = $("#payrollFilterBy").val();
+        enableInputFields();
         showTimeSheet(empId);
         showOTSheet(empId);
         populatePayroll();
@@ -923,7 +981,41 @@ function clearTextBox_PayrollDeduction() {
     $('#deduction2ndPeriod').prop('checked', false);
 }
 
+function validatePayrollIncome() {
+    var incomeRecurStart = $('#incomeRecurStart').val();
+    var incomeRecurEnd = $('#incomeRecurEnd').val();
+    var isValid = true;
+
+    if (incomeRecurStart != '' && incomeRecurEnd != '') {
+        if (Date.parse(incomeRecurStart) > Date.parse(incomeRecurEnd)) {
+            $('#incomeRecurEnd').parent().addClass("has-error").removeClass("has-success");
+            $('#incomeRecurEnd').prop("title", "Recur Start Date should be greater than or equal to Recur End Date.");
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
+
+function validatePayrollDeduction() {
+    var deductionRecurStart = $('#deductionRecurStart').val();
+    var deductionRecurEnd = $('#deductionRecurEnd').val();
+    var isValid = true;
+
+    if (deductionRecurStart != '' && deductionRecurEnd != '') {
+        if (Date.parse(deductionRecurStart) > Date.parse(deductionRecurEnd)) {
+            $('#deductionRecurEnd').parent().addClass("has-error").removeClass("has-success");
+            $('#deductionRecurEnd').prop("title", "Recur Start Date should be greater than or equal to Recur End Date.");
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
+
 function add_PayrollIncome() {
+    if (!validatePayrollIncome()) { return false; }
+
     var frequency = ($('#income1stPeriod').is(':checked') ? '1' : '') + ($('#income2ndPeriod').is(':checked') ? '2' : '');
     var income = {
         EarnCode: $("#incomeDescription").val(),
@@ -944,12 +1036,14 @@ function add_PayrollIncome() {
             $('#incomeModal').modal('hide');
         },
         error: function (errormessage) {
-            showMessage(errormessage.statusText);
+            //showMessage(errormessage.statusText);
         }
     });
 }
 
 function add_PayrollDeduction() {
+    if (!validatePayrollDeduction()) { return false; }
+
     var frequency = ($('#deduction1stPeriod').is(':checked') ? '1' : '') + ($('#deduction2ndPeriod').is(':checked') ? '2' : '');
     var deduction = {
         DedCode: $("#deductionDescription").val(),
@@ -970,7 +1064,7 @@ function add_PayrollDeduction() {
             $('#deductionModal').modal('hide');
         },
         error: function (errormessage) {
-            showMessage(errormessage.statusText);
+            //showMessage(errormessage.statusText);
         }
     });
 }
@@ -1060,6 +1154,8 @@ function show_PayrollDeduction(deductionId) {
 }
 
 function update_PayrollIncome() {
+    if (!validatePayrollIncome()) { return false; }
+
     var frequency = ($('#income1stPeriod').is(':checked') ? '1' : '') + ($('#income2ndPeriod').is(':checked') ? '2' : '');
     var income = {
         EarningId: $("#incomeId").val(),
@@ -1094,6 +1190,7 @@ function update_PayrollIncome() {
 }
 
 function update_PayrollDeduction() {
+    if (!validatePayrollDeduction()) { return false; }
     var frequency = ($('#deduction1stPeriod').is(':checked') ? '1' : '') + ($('#deduction2ndPeriod').is(':checked') ? '2' : '');
     var deduction = {
         DeductionId: $("#deductionId").val(),

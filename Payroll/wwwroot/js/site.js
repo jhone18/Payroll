@@ -989,6 +989,8 @@ function clearTextBox_PayrollIncome() {
     $('#addPayrollIncome').show();
     $('#income1stPeriod').prop('checked', false);
     $('#income2ndPeriod').prop('checked', false);
+    $("#incomeRecurEnd").parent().removeClass("has-error");
+    $('#incomeRecurEnd').prop("title", "");
 }
 
 function clearTextBox_PayrollDeduction() {
@@ -1003,6 +1005,8 @@ function clearTextBox_PayrollDeduction() {
     $('#addPayrollDeduction').show();
     $('#deduction1stPeriod').prop('checked', false);
     $('#deduction2ndPeriod').prop('checked', false);
+    $("#deductionRecurEnd").parent().removeClass("has-error");
+    $('#deductionRecurEnd').prop("title", "");
 }
 
 function validatePayrollIncome() {
@@ -1133,6 +1137,8 @@ function show_PayrollIncome(incomeId) {
                     $('#income2ndPeriod').prop('checked', true);
                     break;
             }
+            $("#incomeRecurEnd").parent().removeClass("has-error");
+            $('#incomeRecurEnd').prop("title", "");
             $('#incomeModal').modal('show');
             $('#updatePayrollIncome').show();
             $('#addPayrollIncome').hide();
@@ -1175,6 +1181,8 @@ function show_PayrollDeduction(deductionId) {
                     $('#deduction2ndPeriod').prop('checked', true);
                     break;
             }
+            $("#deductionRecurEnd").parent().removeClass("has-error");
+            $('#deductionRecurEnd').prop("title", "");
             $('#deductionModal').modal('show');
             $('#updatePayrollDeduction').show();
             $('#addPayrollDeduction').hide();

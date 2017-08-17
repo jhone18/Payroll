@@ -927,12 +927,7 @@ function reloadPayrollTable() {
         populateEmployeeTable("/Payroll/GetEmployees?status=" + $("#payrollFilterBy").val());
         selectDataTable();
     }
-    //if ($.fn.DataTable.isDataTable('#incomeTable')) {
-    //    $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
-    //}
-    //if ($.fn.DataTable.isDataTable('#deductionTable')) {
-    //    $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
-    //}
+    loadActiveTab();
 }
 
 function showSearchText() {

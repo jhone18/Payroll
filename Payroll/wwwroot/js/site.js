@@ -1069,6 +1069,15 @@ function add_PayrollDeduction() {
     });
 }
 
+function returnNullIfEmpty(data, out) {
+    if (data == null) {
+        return ""
+    }
+    else {
+        return out;
+    }
+}
+
 function show_PayrollIncome(incomeId) {
     //$('#userId').css('border-color', 'lightgrey');
     $.ajax({
@@ -1082,10 +1091,10 @@ function show_PayrollIncome(incomeId) {
             $("#incomeId").val(data.EarningId);
             $("#incomeCode").val(data.EarnCode);
             $('#incomeDescription').val(data.EarnCode);
-            $('#incomeTranDate').val(moment(data.TranDate).format("MM/DD/YYYY"));
+            $('#incomeTranDate').val(returnNullIfEmpty(data.TranDate,moment(data.TranDate).format("MM/DD/YYYY")));
             $('#incomeAmount').val(data.Amount);
-            $('#incomeRecurStart').val(moment(data.RecurStart).format("MM/DD/YYYY"));
-            $('#incomeRecurEnd').val(moment(data.RecurEnd).format("MM/DD/YYYY"));
+            $('#incomeRecurStart').val(returnNullIfEmpty(data.RecurStart,moment(data.RecurStart).format("MM/DD/YYYY")));
+            $('#incomeRecurEnd').val(returnNullIfEmpty(data.RecurEnd,moment(data.RecurEnd).format("MM/DD/YYYY")));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#income1stPeriod').prop('checked', true);
@@ -1124,10 +1133,10 @@ function show_PayrollDeduction(deductionId) {
             $("#deductionId").val(data.DeductionId);
             $("#deductionCode").val(data.DedCode);
             $('#deductionDescription').val(data.DedCode);
-            $('#deductionTranDate').val(moment(data.TranDate).format("MM/DD/YYYY"));
+            $('#deductionTranDate').val(returnNullIfEmpty(data.TranDate,moment(data.TranDate).format("MM/DD/YYYY")));
             $('#deductionAmount').val(data.DedAmount);
-            $('#deductionRecurStart').val(moment(data.RecurStart).format("MM/DD/YYYY"));
-            $('#deductionRecurEnd').val(moment(data.RecurEnd).format("MM/DD/YYYY"));
+            $('#deductionRecurStart').val(returnNullIfEmpty(data.RecurStart,moment(data.RecurStart).format("MM/DD/YYYY")));
+            $('#deductionRecurEnd').val(returnNullIfEmpty(data.RecurEnd,moment(data.RecurEnd).format("MM/DD/YYYY")));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#deduction1stPeriod').prop('checked', true);

@@ -534,6 +534,28 @@ $(document).ready(function () {
     $("#newPayrollDeduction").prop('disabled', true);
     $("#payrollTabs").tabs();
 
+    $("#payrollTabs").tabs({
+        activate: function (event, ui) {
+            var empId = $("#payrollSearchTextId").val();
+            var status = $("#payrollFilterBy").val();
+            switch (ui.newTab.index()) {
+                case 0:
+                    showTimeSheet(empId);
+                    break;
+                case 1:
+                    showOTSheet(empId);
+                    break;
+                case 2:
+                    populatePayrollIncome(empId, status);
+                    break;
+                case 3:
+                    populatePayrollDeduction(empId, status)
+                    break;
+            }
+        }
+    });
+
+
     $("#payrollSearchText").autocomplete({
         source: function (request, response) {
             $.ajax({
@@ -642,29 +664,9 @@ $(document).ready(function () {
                         options.append($("<option />").val(item.id).text(item.value));
                     });
                 });
-
-
                 $("#payrollSearchList").on("change", function () {
                     var departmentId = $(this).val();
-                    $("#employeeTable").dataTable({
-                        "processing": true, // for show progress bar
-                        "serverSide": true, // for process server side
-                        "filter": false, // this is for disable filter (search box)
-                        "ordering": false,
-                        lengthChange: false,
-                        destroy: true,
-                        "ajax": {
-                            "url": "/Payroll/GetEmployeesByDepartment?departmentId=" + departmentId + "&status=" + status,
-                            "type": "GET",
-                            "contentType": 'application/json; charset=utf-8',
-                            "datatype": "json"
-                        },
-                        "columns": [
-                            { "data": "employeeId", "name": "Employee Id" },
-                            { "data": "lastName", "name": "Last Name" },
-                            { "data": "firstName", "name": "First Name" }
-                        ]
-                    });
+                    populateEmployeeTable("/Payroll/GetEmployeesByDepartment?departmentId=" + departmentId + "&status=" + status);
                     selectDataTable();
                 });
                 break;
@@ -675,7 +677,6 @@ $(document).ready(function () {
         if ($(this).val() == '') {
             $("#payrollSearchText").val("");
             $("#payrollSearchTextId").val("");
-            $("#payrollTabs").tabs("disable");
             reloadPayrollTable();
             disableInputFields();
         }
@@ -684,7 +685,6 @@ $(document).ready(function () {
     $("#payrollFilterBy").change(function () {
         $("#payrollSearchText").val("");
         $("#payrollSearchTextId").val("");
-        $("#payrollTabs").tabs("disable");
         reloadPayrollTable();
         disableInputFields();
     });
@@ -692,7 +692,6 @@ $(document).ready(function () {
 
     $("#searchEmployee").click(function () {
         if ($("#payrollSearchTextId").val() != '') {
-            $("#payrollTabs").tabs("enable");
             enableInputFields();
 
             var empId = $("#payrollSearchTextId").val();
@@ -700,10 +699,7 @@ $(document).ready(function () {
 
             populateEmployeeTable("/Payroll/GetEmployeesID?employeeId=" + empId + "&status=" + status);
             selectDataTable();
-
-            showTimeSheet(empId);
-            showOTSheet(empId);
-            populatePayroll();
+            loadActiveTab();
         }
 
     });
@@ -808,10 +804,7 @@ $(document).ready(function () {
     //});
 });
 
-function populatePayroll() {
-    var empId = $("#payrollSearchTextId").val();
-    var status = $("#payrollFilterBy").val();
-
+function populatePayrollIncome(empId, status) {
     $("#incomeTable").dataTable({
         "processing": true, // for show progress bar
         "serverSide": true, // for process server side
@@ -835,7 +828,9 @@ function populatePayroll() {
             { "data": "htmlButtons", "name": "" }
         ]
     });
+}
 
+function populatePayrollDeduction(empId, status) {
     $("#deductionTable").dataTable({
         "processing": true, // for show progress bar
         "serverSide": true, // for process server side
@@ -879,7 +874,15 @@ function populateEmployeeTable(url) {
             { "data": "employeeId", "name": "Employee Id" },
             { "data": "lastName", "name": "Last Name" },
             { "data": "firstName", "name": "First Name" }
-        ]
+        ],
+        initComplete: function (settings, json) {
+            if (json.recordsTotal > 0) {
+                $('#employeeTable tbody tr:eq(0)').click();
+            }
+            else {
+                disableInputFields();
+            }
+        }
     });
 }
 
@@ -890,25 +893,46 @@ function selectDataTable() {
 
         $('#employeeTable tbody tr').removeAttr("style");
         $(this).css("background-color", "#deedf7");
-
-        var empId = $("#payrollSearchTextId").val();
-        var status = $("#payrollFilterBy").val();
         enableInputFields();
-        showTimeSheet(empId);
-        showOTSheet(empId);
-        populatePayroll();
+        loadActiveTab();
     });
+}
+
+function loadActiveTab() {
+    var empId = $("#payrollSearchTextId").val();
+    var status = $("#payrollFilterBy").val();
+
+    var selected = $("#payrollTabs").tabs('option', 'active'); // => 0
+    switch (selected) {
+        case 0:
+            showTimeSheet(empId);
+            break;
+        case 1:
+            showOTSheet(empId);
+            break;
+        case 2:
+            populatePayrollIncome(empId, status);
+            break;
+        case 3:
+            populatePayrollDeduction(empId, status)
+            break;
+    }
 }
 
 function reloadPayrollTable() {
     var empId = $("#payrollSearchTextId").val();
     var status = $("#payrollFilterBy").val();
-    if ($.fn.DataTable.isDataTable('#incomeTable')) {
-        $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
+
+    if (empId == '') {
+        populateEmployeeTable("/Payroll/GetEmployees?status=" + $("#payrollFilterBy").val());
+        selectDataTable();
     }
-    if ($.fn.DataTable.isDataTable('#deductionTable')) {
-        $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
-    }
+    //if ($.fn.DataTable.isDataTable('#incomeTable')) {
+    //    $("#incomeTable").DataTable().ajax.url("/Payroll/GetIncomeDetails?searchText=" + empId + "&status=" + status).load();
+    //}
+    //if ($.fn.DataTable.isDataTable('#deductionTable')) {
+    //    $("#deductionTable").DataTable().ajax.url("/Payroll/GetDeductionDetails?searchText=" + empId + "&status=" + status).load();
+    //}
 }
 
 function showSearchText() {
@@ -1091,10 +1115,10 @@ function show_PayrollIncome(incomeId) {
             $("#incomeId").val(data.EarningId);
             $("#incomeCode").val(data.EarnCode);
             $('#incomeDescription').val(data.EarnCode);
-            $('#incomeTranDate').val(returnNullIfEmpty(data.TranDate,moment(data.TranDate).format("MM/DD/YYYY")));
+            $('#incomeTranDate').val(returnNullIfEmpty(data.TranDate, moment(data.TranDate).format("MM/DD/YYYY")));
             $('#incomeAmount').val(data.Amount);
-            $('#incomeRecurStart').val(returnNullIfEmpty(data.RecurStart,moment(data.RecurStart).format("MM/DD/YYYY")));
-            $('#incomeRecurEnd').val(returnNullIfEmpty(data.RecurEnd,moment(data.RecurEnd).format("MM/DD/YYYY")));
+            $('#incomeRecurStart').val(returnNullIfEmpty(data.RecurStart, moment(data.RecurStart).format("MM/DD/YYYY")));
+            $('#incomeRecurEnd').val(returnNullIfEmpty(data.RecurEnd, moment(data.RecurEnd).format("MM/DD/YYYY")));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#income1stPeriod').prop('checked', true);
@@ -1133,10 +1157,10 @@ function show_PayrollDeduction(deductionId) {
             $("#deductionId").val(data.DeductionId);
             $("#deductionCode").val(data.DedCode);
             $('#deductionDescription').val(data.DedCode);
-            $('#deductionTranDate').val(returnNullIfEmpty(data.TranDate,moment(data.TranDate).format("MM/DD/YYYY")));
+            $('#deductionTranDate').val(returnNullIfEmpty(data.TranDate, moment(data.TranDate).format("MM/DD/YYYY")));
             $('#deductionAmount').val(data.DedAmount);
-            $('#deductionRecurStart').val(returnNullIfEmpty(data.RecurStart,moment(data.RecurStart).format("MM/DD/YYYY")));
-            $('#deductionRecurEnd').val(returnNullIfEmpty(data.RecurEnd,moment(data.RecurEnd).format("MM/DD/YYYY")));
+            $('#deductionRecurStart').val(returnNullIfEmpty(data.RecurStart, moment(data.RecurStart).format("MM/DD/YYYY")));
+            $('#deductionRecurEnd').val(returnNullIfEmpty(data.RecurEnd, moment(data.RecurEnd).format("MM/DD/YYYY")));
             switch (data.Frequency.trim()) {
                 case '1':
                     $('#deduction1stPeriod').prop('checked', true);

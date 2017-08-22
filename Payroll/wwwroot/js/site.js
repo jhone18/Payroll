@@ -312,6 +312,7 @@ $(document).ready(function () {
         }
     });
 
+    $('#loanEmployeesEntry').off("keydown.autocomplete");
     $('#loanEmployeesEntry').on("keydown.autocomplete", function () {
         $("#loanEmployeesEntry").autocomplete({
             source: function (request, response) {
@@ -581,6 +582,7 @@ $(document).ready(function () {
     populateEmployeeTable("/Payroll/GetEmployees?status=" + $("#payrollFilterBy").val());
     selectDataTable();
 
+    $("#searchByType").off("change");
     $("#searchByType").on("change", function () {
 
         var status = $("#payrollFilterBy").val();
@@ -647,6 +649,7 @@ $(document).ready(function () {
                     });
                 });
 
+                $("#payrollSearchList").off("change");
                 $("#payrollSearchList").on("change", function () {
                     var payCode = $(this).val();
                     populateEmployeeTable("/Payroll/GetEmployeesByPayCode?payCode=" + payCode + "&status=" + status);
@@ -664,6 +667,7 @@ $(document).ready(function () {
                         options.append($("<option />").val(item.id).text(item.value));
                     });
                 });
+                $("#payrollSearchList").off("change");
                 $("#payrollSearchList").on("change", function () {
                     var departmentId = $(this).val();
                     populateEmployeeTable("/Payroll/GetEmployeesByDepartment?departmentId=" + departmentId + "&status=" + status);
@@ -887,6 +891,7 @@ function populateEmployeeTable(url) {
 }
 
 function selectDataTable() {
+    $('#employeeTable').off('click', 'tbody tr');
     $('#employeeTable').on('click', 'tbody tr', function () {
         console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
         $("#payrollSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
@@ -1055,7 +1060,7 @@ function add_PayrollIncome() {
         type: "POST",
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable().ajax.reload();
+            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
             $('#incomeModal').modal('hide');
         },
         error: function (errormessage) {
@@ -1209,7 +1214,7 @@ function update_PayrollIncome() {
         data: "income=" + JSON.stringify(income),
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable().ajax.reload();
+            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
             $('#incomeModal').modal('hide');
             $('#incomeId').val("");
             //$('#incomeDescription').val("");
@@ -1244,7 +1249,7 @@ function update_PayrollDeduction() {
         data: "deduction=" + JSON.stringify(deduction),
         dataType: "json",
         success: function (result) {
-            $("#deductionTable").DataTable().ajax.reload();
+            $("#deductionTable").DataTable({ destroy: true}).ajax.reload();
             $('#deductionModal').modal('hide');
             $('#deductionId').val("");
             $('#deductionTranDate').val("");
@@ -1266,7 +1271,7 @@ function delete_PayrollIncome(incomeId) {
         data: "incomeId=" + incomeId,
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable().ajax.reload();
+            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
             $('#deleteIncomeModal' + incomeId).modal('hide');
         },
         error: function (errormessage) {
@@ -1282,7 +1287,7 @@ function delete_PayrollDeduction(deductionId) {
         data: "deductionId=" + deductionId,
         dataType: "json",
         success: function (result) {
-            $("#deductionTable").DataTable().ajax.reload();
+            $("#deductionTable").DataTable({ destroy: true}).ajax.reload();
             $('#deleteDeductionModal' + deductionId).modal('hide');
         },
         error: function (errormessage) {

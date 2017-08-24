@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETCoreApp,Version=v1.1": {
       "Libuv/1.9.1": {
@@ -10796,19 +10796,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Jaime\\.nuget\\packages\\": {}
+    "C:\\Users\\jaime\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
+    "restoreSettings": {
+      "hideWarningsAndErrors": true
+    },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
+      "projectUniqueName": "C:\\Users\\jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
       "projectName": "Payroll",
-      "projectPath": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
-      "outputPath": "C:\\Users\\Jaime\\Desktop\\Payroll\\Payroll\\obj\\",
+      "projectPath": "C:\\Users\\jaime\\Desktop\\Payroll\\Payroll\\Payroll.csproj",
+      "packagesPath": "C:\\Users\\jaime\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jaime\\Desktop\\Payroll\\Payroll\\obj\\",
       "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\jaime\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
       "originalTargetFrameworks": [
         "netcoreapp1.1"
       ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
       "frameworks": {
         "netcoreapp1.1": {
           "projectReferences": {}

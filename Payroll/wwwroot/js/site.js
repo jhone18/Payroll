@@ -1060,7 +1060,7 @@ function add_PayrollIncome() {
         type: "POST",
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
+            $("#incomeTable").DataTable().ajax.reload();
             $('#incomeModal').modal('hide');
         },
         error: function (errormessage) {
@@ -1214,7 +1214,7 @@ function update_PayrollIncome() {
         data: "income=" + JSON.stringify(income),
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
+            $("#incomeTable").DataTable().ajax.reload();
             $('#incomeModal').modal('hide');
             $('#incomeId').val("");
             //$('#incomeDescription').val("");
@@ -1249,7 +1249,7 @@ function update_PayrollDeduction() {
         data: "deduction=" + JSON.stringify(deduction),
         dataType: "json",
         success: function (result) {
-            $("#deductionTable").DataTable({ destroy: true}).ajax.reload();
+            $("#deductionTable").DataTable().ajax.reload();
             $('#deductionModal').modal('hide');
             $('#deductionId').val("");
             $('#deductionTranDate').val("");
@@ -1271,7 +1271,7 @@ function delete_PayrollIncome(incomeId) {
         data: "incomeId=" + incomeId,
         dataType: "json",
         success: function (result) {
-            $("#incomeTable").DataTable({ destroy: true}).ajax.reload();
+            $("#incomeTable").DataTable().ajax.reload();
             $('#deleteIncomeModal' + incomeId).modal('hide');
         },
         error: function (errormessage) {
@@ -1287,7 +1287,7 @@ function delete_PayrollDeduction(deductionId) {
         data: "deductionId=" + deductionId,
         dataType: "json",
         success: function (result) {
-            $("#deductionTable").DataTable({ destroy: true}).ajax.reload();
+            $("#deductionTable").DataTable().ajax.reload();
             $('#deleteDeductionModal' + deductionId).modal('hide');
         },
         error: function (errormessage) {

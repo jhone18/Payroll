@@ -12,7 +12,6 @@ C:\Users\Jaime\Desktop\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.runtimeco
 C:\Users\Jaime\Desktop\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.runtimeconfig.dev.json
 C:\Users\Jaime\Desktop\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.dll
 C:\Users\Jaime\Desktop\Payroll\Payroll\bin\Debug\netcoreapp1.1\Payroll.pdb
-C:\Users\Jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.csprojResolveAssemblyReference.cache
 C:\Users\Jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.AssemblyInfo.cs
 C:\Users\Jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.dll
 C:\Users\Jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.pdb

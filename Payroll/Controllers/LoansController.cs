@@ -124,7 +124,7 @@ namespace Payroll.Controllers
 
                 return Json(JsonConvert.SerializeObject(loan));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

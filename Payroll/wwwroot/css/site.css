@@ -37,6 +37,11 @@ textarea {
     }
 }
 
+@media (min-width: 1200px) {
+    .container {
+        width: 1200px;
+    }
+}
 .form-control small {
     max-width: 25% !important;
 }

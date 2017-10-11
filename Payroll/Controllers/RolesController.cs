@@ -114,7 +114,7 @@ namespace Payroll.Controllers
 
                 return Json(new { Success = true });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

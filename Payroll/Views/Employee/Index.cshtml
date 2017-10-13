@@ -20,16 +20,16 @@
                 <option value="PayCode">PayCode</option>
                 <option value="Department">Deparment</option>
             </select>
-            <input type="text" class="form-control" placeholder="Search" id="payrollSearchText" />
-            <select class="form-control" id="payrollSearchList" style="display:none"></select>
-            <input type="hidden" id="payrollSearchTextId" />
+            <input type="text" class="form-control" placeholder="Search" id="employeeSearchText" />
+            <select class="form-control" id="employeeSearchList" style="display:none"></select>
+            <input type="hidden" id="employeeSearchTextId" />
             <button type="button" class="btn btn-link" value="Search" id="searchEmployee">
                 <span class="glyphicon glyphicon-search"></span>
             </button>
         </div>
         <div class="col-md-6">
             <label>Show Employee with Status </label>
-            <select class="form-control" id="payrollFilterBy">
+            <select class="form-control" id="employeeFilterBy">
                 <option selected value="ACTIVE">Active</option>
                 <option value="HOLD">Hold</option>
                 <option value="RESIGNED">Resigned</option>
@@ -52,7 +52,7 @@
     </div>
     <div class="navbar-left col-md-8">
         <div class="row">
-            <div class="bs-component" id="payrollTabs">
+            <div class="bs-component" id="employeeTabs">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#personal" data-toggle="tab" onclick="return false;">Personnal</a></li>
                     <li><a href="#employment" data-toggle="tab" onclick="return false;">Employment</a></li>
@@ -63,7 +63,7 @@
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade active in" id="personal">
-                        <label class="text-primary">Personal Info :</label>
+                        <label class="text-primary" id="personalInfo">Personal Info :</label>
                         <hr/>
                         @Html.Partial("Personal")
                         <div class="modal-footer">
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="employment">
-                        <label class="text-primary">Employment Info :</label>
+                        <label class="text-primary" id="employmentInfo">Employment Info :</label>
                         <hr />
                         @Html.Partial("Employment")
                         <div class="modal-footer">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="payroll">
-                        <label class="text-primary">Payroll Info :</label>
+                        <label class="text-primary" id="payrollInfo">Payroll Info :</label>
                         <hr />
                         @Html.Partial("Payroll")
                         <div class="modal-footer">
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="statutory">
-                        <label class="text-primary">Statutory Info :</label>
+                        <label class="text-primary" id="statutoryInfo">Statutory Info :</label>
                         <hr />
                         @Html.Partial("Statutory")
                         <div class="modal-footer">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="prevEmployers">
-                        <label class="text-primary">Previous Employers:</label>
+                        <label class="text-primary" id="prevEmployersInfo">Previous Employers:</label>
                         <hr />
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover" id="prevEmployerTable">
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="dependents">
-                        <label class="text-primary">Dependents:</label>
+                        <label class="text-primary" id="dependentsInfo">Dependents:</label>
                         <hr />
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover" id="dependentTable">

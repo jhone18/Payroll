@@ -16,3 +16,4 @@ C:\Users\jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.csproj.Co
 C:\Users\jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.AssemblyInfo.cs
 C:\Users\jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.dll
 C:\Users\jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.pdb
+C:\Users\jaime\Desktop\Payroll\Payroll\obj\Debug\netcoreapp1.1\Payroll.csprojResolveAssemblyReference.cache

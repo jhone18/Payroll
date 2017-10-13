@@ -79,7 +79,7 @@
                 </div>
                     <div class="collapse navbar-collapse" id="kssMenu">
                         <ul class="nav navbar-nav">
-                            <li><a href="#">Company</a></li>
+                            <li><a asp-controller="Company" asp-action="Index">Company</a></li>
                             <li><a href="#">Pay Period</a></li>
                             <li><a href="#">Pay Code</a></li>
                             <li><a asp-controller="Employee" asp-action="Index">Employee</a></li>
@@ -131,6 +131,7 @@
         <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
         <script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
         <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        
     </environment>
     @RenderSection("Scripts", required: false)
 </body>

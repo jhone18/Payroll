@@ -42,6 +42,7 @@ textarea {
         width: 1200px;
     }
 }
+
 .form-control small {
     max-width: 25% !important;
 }
@@ -72,10 +73,14 @@ ul.ui-autocomplete {
 
 .ui-autocomplete {
     position: fixed;
- 
+    .ui-autocomplete-loading
 
-.ui-autocomplete-loading {
+{
     background: white url("../images/ui-anim_basic_16x16.gif") right center no-repeat;
 }
 
-.ui-autocomplete { height: 200px; overflow-y: scroll; overflow-x: hidden;}
+.ui-autocomplete {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

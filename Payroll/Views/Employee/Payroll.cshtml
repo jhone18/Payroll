@@ -7,8 +7,23 @@
         <div class="col-md-3">
             <label>Pay Code</label>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-7">
             <select class="form-control" id="payCode"></select>
+        </div>
+        <div class="col-md-2" style="text-align:right">
+            <div id="payCodeEdit" onclick="ShowPayCodeSave();" style="cursor:pointer">
+                <a class='item-action item-action-raised' title='Edit'>
+                    <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+                </a>
+            </div>
+            <div id="payCodeSave" onclick="ShowPayCodeEdit();" style="display:none;cursor:pointer">
+                <a class='item-action item-action-raised' title='Save'>
+                    <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+                </a>
+                <a class='item-action item-action-raised' title='Cancel'>
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+                </a>
+            </div>
         </div>
         <div class="col-md-3">
             <label>Payroll Type</label>
@@ -16,28 +31,61 @@
         <div class="col-md-9">
             <select class="form-control" id="payrollType"></select>
         </div>
+    </div>
+    <hr />
+    <div class="row">
         <div class="col-md-3">
             <label>Compute as Daily</label>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-7">
             <select class="form-control">
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select>
         </div>
+        <div class="col-md-2" style="text-align:right">
+            <div id="computeDailyEdit" onclick="ShowComputeDailySave();" style="cursor:pointer">
+                <a class='item-action item-action-raised' title='Edit'>
+                    <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+                </a>
+            </div>
+            <div id="computeDailySave" onclick="ShowComputeDailyEdit();" style="display:none;cursor:pointer">
+                <a class='item-action item-action-raised' title='Save'>
+                    <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+                </a>
+                <a class='item-action item-action-raised' title='Cancel'>
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+                </a>
+            </div>
+        </div>
     </div>
-    <hr/>
+    <hr />
     <div class="row">
         <div class="row"></div>
         <div class="col-md-3">
             <label>Payment Type</label>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-7">
             <select class="form-control">
                 <option value="BANK">BANK</option>
                 <option value="CASH">CASH</option>
                 <option value="CHEQUE">CHEQUE</option>
             </select>
+        </div>
+        <div class="col-md-2" style="text-align:right">
+            <div id="paymentTypeEdit" onclick="ShowPaymentTypeSave();" style="cursor:pointer">
+                <a class='item-action item-action-raised' title='Edit'>
+                    <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+                </a>
+            </div>
+            <div id="paymentTypeSave" onclick="ShowPaymentTypeEdit();" style="display:none;cursor:pointer">
+                <a class='item-action item-action-raised' title='Save'>
+                    <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+                </a>
+                <a class='item-action item-action-raised' title='Cancel'>
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+                </a>
+            </div>
         </div>
         <div class="col-md-3">
             <label>Bank</label>
@@ -55,16 +103,34 @@
             <label>Bank Acct. No.</label>
         </div>
         <div class="col-md-9">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control" />
         </div>
+    </div>
+    <hr />
+    <div class="row">
         <div class="col-md-3">
             <label>Allow OT</label>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-7">
             <select class="form-control">
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select>
+        </div>
+        <div class="col-md-2" style="text-align:right">
+            <div id="allowOTEdit" onclick="ShowAllowOTSave();" style="cursor:pointer">
+                <a class='item-action item-action-raised' title='Edit'>
+                    <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+                </a>
+            </div>
+            <div id="allowOTSave" onclick="ShowAllowOTEdit();" style="display:none;cursor:pointer">
+                <a class='item-action item-action-raised' title='Save'>
+                    <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+                </a>
+                <a class='item-action item-action-raised' title='Cancel'>
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+                </a>
+            </div>
         </div>
     </div>
     <hr />
@@ -72,8 +138,23 @@
         <div class="col-md-3">
             <label>Salary</label>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-7">
             <input type="text" class="form-control" />
+        </div>
+        <div class="col-md-2" style="text-align:right">
+            <div id="salaryEdit" onclick="ShowSalarySave();" style="cursor:pointer">
+                <a class='item-action item-action-raised' title='Edit'>
+                    <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+                </a>
+            </div>
+            <div id="salarySave" onclick="ShowSalaryEdit();" style="display:none;cursor:pointer">
+                <a class='item-action item-action-raised' title='Save'>
+                    <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+                </a>
+                <a class='item-action item-action-raised' title='Cancel'>
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+                </a>
+            </div>
         </div>
         <div class="col-md-3">
             <label>Daily Rate</label>

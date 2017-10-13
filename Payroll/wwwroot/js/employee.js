@@ -184,7 +184,7 @@ function PopulateEmployment() {
         $.each(JSON.parse(result), function () {
             employmentType.append($("<option />").val(this.id).text(this.value));
         });
-    })
+    })  
 
     $.getJSON("/Employee/GetEmploymentStatus/", function (result) {
         var employmentStatus = $("#employmentStatus");
@@ -374,3 +374,133 @@ function showSearchList() {
 function disableInputFields() { }
 
 function enableInputFields() { }
+
+function ShowEmploymentSave() {
+    $("#employmentEdit").hide();
+    $("#employmentSave").show();
+}
+
+function ShowEmploymentEdit() {
+    $("#employmentSave").hide();
+    $("#employmentEdit").show();
+}
+
+function ShowEmploymentTypeSave() {
+    $("#employmentTypeEdit").hide();
+    $("#employmentTypeSave").show();
+}
+
+function ShowEmploymentTypeEdit() {
+    $("#employmentTypeSave").hide();
+    $("#employmentTypeEdit").show();
+}
+
+function ShowEmploymentStatusSave() {
+    $("#employmentStatusEdit").hide();
+    $("#employmentStatusSave").show();
+}
+
+function ShowEmploymentStatusEdit() {
+    $("#employmentStatusSave").hide();
+    $("#employmentStatusEdit").show();
+}
+
+function ShowDivisionSave() {
+    $("#divisionEdit").hide();
+    $("#divisionSave").show();
+}
+
+function ShowDivisionEdit() {
+    $("#divisionSave").hide();
+    $("#divisionEdit").show();
+}
+
+function ShowPayCodeSave() {
+    $("#payCodeEdit").hide();
+    $("#payCodeSave").show();
+}
+
+function ShowPayCodeEdit() {
+    $("#payCodeSave").hide();
+    $("#payCodeEdit").show();
+}
+
+function ShowComputeDailySave() {
+    $("#computeDailyEdit").hide();
+    $("#computeDailySave").show();
+}
+
+function ShowComputeDailyEdit() {
+    $("#computeDailySave").hide();
+    $("#computeDailyEdit").show();
+}
+
+function ShowPaymentTypeSave() {
+    $("#paymentTypeEdit").hide();
+    $("#paymentTypeSave").show();
+}
+
+function ShowPaymentTypeEdit() {
+    $("#paymentTypeSave").hide();
+    $("#paymentTypeEdit").show();
+}
+
+function ShowAllowOTSave() {
+    $("#allowOTEdit").hide();
+    $("#allowOTSave").show();
+}
+
+function ShowAllowOTEdit() {
+    $("#allowOTSave").hide();
+    $("#allowOTEdit").show();
+}
+
+function ShowSalarySave() {
+    $("#salaryEdit").hide();
+    $("#salarySave").show();
+}
+
+function ShowSalaryEdit() {
+    $("#salarySave").hide();
+    $("#salaryEdit").show();
+}
+
+function ShowSSSSave() {
+    $("#sssEdit").hide();
+    $("#sssSave").show();
+}
+
+function ShowSSSEdit() {
+    $("#sssSave").hide();
+    $("#sssEdit").show();
+}
+
+function ShowPhilhealthSave() {
+    $("#philhealthEdit").hide();
+    $("#philhealthSave").show();
+}
+
+function ShowPhilhealthEdit() {
+    $("#philhealthSave").hide();
+    $("#philhealthEdit").show();
+}
+
+function ShowPagibigSave() {
+    $("#pagibigEdit").hide();
+    $("#pagibigSave").show();
+}
+
+function ShowPagibigEdit() {
+    $("#pagibigSave").hide();
+    $("#pagibigEdit").show();
+}
+
+function ShowTINSave() {
+    $("#tinEdit").hide();
+    $("#tinSave").show();
+}
+
+function ShowTINEdit() {
+    $("#tinSave").hide();
+    $("#tinEdit").show();
+}

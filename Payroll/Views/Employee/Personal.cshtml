@@ -10,6 +10,21 @@
     <div class="col-md-7">
         <input type="text" class="form-control" />
     </div>
+    <div class="col-md-2" style="text-align:right">
+        <div id="employmentEdit" onclick="ShowEmploymentSave();" style="cursor:pointer">
+            <a class='item-action item-action-raised' title='Edit'>
+                <span class="glyphicon glyphicon-edit update" aria-hidden='true'></span>
+            </a>
+        </div>
+        <div id="employmentSave" onclick="ShowEmploymentEdit();" style="display:none;cursor:pointer">
+            <a class='item-action item-action-raised' title='Save'>
+                <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
+            </a>
+            <a class='item-action item-action-raised' title='Cancel'>
+                <span class="glyphicon glyphicon-remove-sign" aria-hidden='true'></span>
+            </a>
+        </div>
+    </div>
     <div class="col-md-3">
         <label>Last Name</label>
     </div>

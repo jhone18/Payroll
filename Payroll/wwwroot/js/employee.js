@@ -330,7 +330,7 @@ function reloadEmployeeTable() {
     var status = $("#employeeFilterBy").val();
 
     if (empId == '') {
-        populateEmployeeTable("/Payroll/GetEmployees?status=" + $("#payrollFilterBy").val());
+        populateEmployeeTable("/Payroll/GetEmployees?status=" + $("#employeeFilterBy").val());
         selectDataTable();
     }
     loadActiveTab();

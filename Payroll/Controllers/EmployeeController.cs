@@ -35,6 +35,44 @@ namespace Payroll.Controllers
             return View();
         }
 
+        public async Task<JsonResult> GetEmploymentDetails(string empId)
+        {
+            try
+            {
+                var employee = await _context.Employee.AsNoTracking().Where(e=> e.EmployeeId == empId).ToListAsync();
+
+                if (employee == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(employee));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<JsonResult> GetPayrollDetails(string empId)
+        {
+            try
+            {
+                var payroll = await _context.PayMast.AsNoTracking().Where(e => e.EmployeeId == empId).ToListAsync();
+
+                if (payroll == null)
+                {
+                    return null;
+                }
+
+                return Json(JsonConvert.SerializeObject(payroll));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         #region Employment
         public async Task<JsonResult> GetEmploymentType()
         {
@@ -285,7 +323,7 @@ namespace Payroll.Controllers
                 }
 
                 var result = (from c in bank
-                              let id = c.BankCode
+                              let id = c.BankCode.Trim()
                               let label = c.BankName
                               let value = c.BankName
                               select new { id, value, label });

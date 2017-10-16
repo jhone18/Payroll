@@ -38,9 +38,9 @@
             <label>Compute as Daily</label>
         </div>
         <div class="col-md-7">
-            <select class="form-control">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+            <select class="form-control" id="computeAsDaily">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
             </select>
         </div>
         <div class="col-md-2" style="text-align:right">
@@ -66,7 +66,7 @@
             <label>Payment Type</label>
         </div>
         <div class="col-md-7">
-            <select class="form-control">
+            <select class="form-control" id="paymentType">
                 <option value="BANK">BANK</option>
                 <option value="CASH">CASH</option>
                 <option value="CHEQUE">CHEQUE</option>
@@ -103,7 +103,7 @@
             <label>Bank Acct. No.</label>
         </div>
         <div class="col-md-9">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" id="bankAcctNo" />
         </div>
     </div>
     <hr />
@@ -112,9 +112,9 @@
             <label>Allow OT</label>
         </div>
         <div class="col-md-7">
-            <select class="form-control">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+            <select class="form-control" id="allowedOT">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
             </select>
         </div>
         <div class="col-md-2" style="text-align:right">
@@ -139,7 +139,7 @@
             <label>Salary</label>
         </div>
         <div class="col-md-7">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" id="salary" />
         </div>
         <div class="col-md-2" style="text-align:right">
             <div id="salaryEdit" onclick="ShowSalarySave();" style="cursor:pointer">
@@ -160,19 +160,19 @@
             <label>Daily Rate</label>
         </div>
         <div class="col-md-9">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" id="dailyRate" />
         </div>
         <div class="col-md-3">
             <label>Hourly Rate</label>
         </div>
         <div class="col-md-9">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" id="hourlyRate" />
         </div>
         <div class="col-md-3">
             <label>Minute Rate</label>
         </div>
         <div class="col-md-9">
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" id="minuteRate" />
         </div>
     </div>
 </div>

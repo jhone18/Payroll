@@ -174,20 +174,23 @@
 function PopulateEmployment() {
     $.getJSON("/Employee/GetEmploymentType/", function (result) {
         var employmentType = $("#employmentType");
+        employmentType.empty();
         $.each(JSON.parse(result), function () {
             employmentType.append($("<option />").val(this.id).text(this.value));
         });
     })
 
     $.getJSON("/Employee/GetRank/", function (result) {
-        var employmentType = $("#rank");
+        var rank = $("#rank");
+        rank.empty();
         $.each(JSON.parse(result), function () {
-            employmentType.append($("<option />").val(this.id).text(this.value));
+            rank.append($("<option />").val(this.id).text(this.value));
         });
     })  
 
     $.getJSON("/Employee/GetEmploymentStatus/", function (result) {
         var employmentStatus = $("#employmentStatus");
+        employmentStatus.empty();
         $.each(JSON.parse(result), function () {
             employmentStatus.append($("<option />").val(this.id).text(this.value));
         });
@@ -195,6 +198,7 @@ function PopulateEmployment() {
 
     $.getJSON("/Employee/GetDivision/", function (result) {
         var division = $("#division");
+        division.empty();
         $.each(JSON.parse(result), function () {
             division.append($("<option />").val(this.id).text(this.value));
             $("#division").trigger("change");
@@ -224,6 +228,7 @@ function PopulateEmployment() {
 
     $.getJSON("/Employee/GetCostCenter/", function (result) {
         var costCenter = $("#costCenter");
+        costCenter.empty();
         $.each(JSON.parse(result), function () {
             costCenter.append($("<option />").val(this.id).text(this.value));
         });
@@ -233,6 +238,7 @@ function PopulateEmployment() {
 function PopulatePayroll() {
     $.getJSON("/Employee/GetPayCode/", function (result) {
         var payCode = $("#payCode");
+        payCode.empty();
         $.each(JSON.parse(result), function () {
             payCode.append($("<option />").val(this.id).text(this.value));
         });
@@ -240,6 +246,7 @@ function PopulatePayroll() {
 
     $.getJSON("/Employee/GetPayrollType/", function (result) {
         var payrollType = $("#payrollType");
+        payrollType.empty();
         $.each(JSON.parse(result), function () {
             payrollType.append($("<option />").val(this.id).text(this.value));
         });
@@ -247,6 +254,7 @@ function PopulatePayroll() {
 
     $.getJSON("/Employee/GetBank/", function (result) {
         var bank = $("#bank");
+        bank.empty();
         $.each(JSON.parse(result), function () {
             bank.append($("<option />").val(this.id).text(this.value));
             $("#bank").trigger("change");
@@ -267,6 +275,7 @@ function PopulatePayroll() {
 function PopulateStatutory() {
     $.getJSON("/Employee/GetTEU/", function (result) {
         var teu = $("#teu");
+        teu.empty();
         $.each(JSON.parse(result), function () {
             teu.append($("<option />").val(this.id).text(this.value));
         });
@@ -309,20 +318,84 @@ function selectDataTable() {
         console.log('API row values : ', $("#employeeTable").DataTable().row(this).data());
         $("#employeeSearchTextId").val($("#employeeTable").DataTable().row(this).data().employeeId);
 
-        var lastName = $("#employeeTable").DataTable().row(this).data().lastName;
-        var firstName = $("#employeeTable").DataTable().row(this).data().firstName;
-        $("#personalInfo").text("Personal Info : " + lastName + ", " + firstName);
-        $("#employmentInfo").text("Employment Info : " + lastName + ", " + firstName);
-        $("#payrollInfo").text("Payroll Info : " + lastName + ", " + firstName);
-        $("#statutoryInfo").text("Statutory Info : " + lastName + ", " + firstName);
-        $("#prevEmployersInfo").text("Previous Employers : " + lastName + ", " + firstName);
-        $("#dependentsInfo").text("Dependents : " + lastName + ", " + firstName);
+
 
         $('#employeeTable tbody tr').removeAttr("style");
         $(this).css("background-color", "#deedf7");
         enableInputFields();
         loadActiveTab();
+        getEmployeeDetails();
     });
+}
+
+function getEmployeeDetails() {
+    var empId = $("#employeeSearchTextId").val();
+    $.getJSON("/Employee/GetEmploymentDetails?empId=" + empId, function (result) {
+        result = jQuery.parseJSON(result)[0];
+
+        var lastName = result.EmployeeId;
+        var firstName = result.FirstName;
+        var middleName = result.MiddleName;
+        $("#personalInfo").text("Personal Info : " + lastName + ", " + firstName + " " + middleName);
+        $("#employmentInfo").text("Employment Info : " + lastName + ", " + firstName + " " + middleName);
+        $("#payrollInfo").text("Payroll Info : " + lastName + ", " + firstName + " " + middleName);
+        $("#statutoryInfo").text("Statutory Info : " + lastName + ", " + firstName + " " + middleName);
+        $("#prevEmployersInfo").text("Previous Employers : " + lastName + ", " + firstName + " " + middleName);
+        $("#dependentsInfo").text("Dependents : " + lastName + ", " + firstName + " " + middleName);
+
+        $("#employeeId").val(result.EmployeeId);
+        $("#lastName").val(result.LastName);
+        $("#firstName").val(result.FirstName);
+        $("#middleName").val(result.MiddleName);
+        $("#gender").val(result.Gender);
+        $("#address").val(result.Address1);
+
+        $("#employmentType").val(result.EmploymentType);
+        $("#position").val(result.Position);
+        $("#rank").val(result.Rank);
+        $("#employmentStatus").val(result.EmployeeStatus);
+        $("#dateEmployed").val(result.DateEmployed);
+        $("#dateRegularized").val(result.DateRegularized);
+        $("#lastWorkedDate").val(result.LastWorkDate);
+        $("#dateTerminated").val(result.DateTerminated);
+        $("#division").val(result.Division);
+        $("#department").val(result.Department);
+        $("#section").val(result.Section);
+        $("#costCenter").val(result.CostCenter);
+
+        $("#payCode").val(result.PayCode);
+        $("#payrollType").val(result.PayrollType);
+        $("#computeAsDaily").val(result.ComputeAsDaily ? 1 : 0);
+        $("#paymentType").val(result.PaymentType.trim());
+        $("#bank").val(result.BankCode);
+        $("#bankBranch").val(result.BranchId);
+        $("#bankAcctNo").val(result.BankAcctNo);
+        $("#allowedOT").val(result.AllowedOt ? 1 : 0);
+        $("#salary").val(result.Salary);
+
+        $("#sssNo").val(result.Sssnumber);
+        $("#sssExempted").val(result.ZeroSss ? 1 : 0);
+        $("#philhealthNo").val(result.PhilhealthNumber);
+        $("#philhealthExempted").val(result.ZeroPh ? 1 : 0);
+        $("#pagibigNo").val(result.PagibigNumber);
+        $("#pagibigAddtl").val(result.AdditionalHdmf);
+        $("#pagibigRate").val(result.TwoPercentRate ? 1 : 0);
+        $("#pagibigExempted").val(result.ZeroHdmf ? 1 : 0);
+        $("#tinNo").val(result.Tin);
+        $("#teu").val(result.Teu);
+        $("#taxRate").val(result.TaxRate);
+        $("#taxExempted").val(result.ZeroTax ? 1 : 0);
+    })
+    $.getJSON("/Employee/GetPayrollDetails?empId=" + empId, function (result) {
+        result = jQuery.parseJSON(result);
+        if (result.length > 0) {
+            result = result[0];
+            $("#dailyRate").val(result.DailyRate);
+            $("#hourlyRate").val(result.HourlyRate);
+            //$("#minuteRate").val(result.MinuteRate);
+        }
+    })
+
 }
 
 function reloadEmployeeTable() {

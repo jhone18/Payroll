@@ -453,7 +453,7 @@ namespace Payroll.Controllers
                 return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Dependents() });
             }
         }
-        public async Task<IActionResult> Details(int dependentsId)
+        public async Task<IActionResult> DetailsDependents(int dependentsId)
         {
             try
             {
@@ -468,6 +468,65 @@ namespace Payroll.Controllers
             catch
             {
                 return Json(JsonConvert.SerializeObject(new Users()));
+            }
+        }
+        [HttpPost]
+        public JsonResult CreateDependents(string dependents)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Dependents dependentsObj = JsonConvert.DeserializeObject<Dependents>(dependents);
+                    dependentsObj.CompanyId = HttpContext.Session.GetString("CompanyId");
+                    _context.Add(dependentsObj);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { Success = true });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpPost]
+        public JsonResult EditDependents(string dependents)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                if (ModelState.IsValid)
+                {
+                    Dependents dependentsObj = JsonConvert.DeserializeObject<Dependents>(dependents);
+                    var dependentsToUpdate = _context.Dependents.Where(d => d.RowId == dependentsObj.RowId).FirstOrDefault();
+                    dependentsObj.CompanyId = HttpContext.Session.GetString("CompanyId");
+
+                    _context.Entry(dependentsToUpdate).CurrentValues.SetValues(dependentsObj);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        [HttpPost]
+        public JsonResult DeleteDependents(int dependentsId)
+        {
+            try
+            {
+                var dependentsToDelete = _context.Dependents.Where(d => d.RowId == dependentsId).FirstOrDefault();
+                _context.Entry(dependentsToDelete).State = EntityState.Deleted;
+                _context.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                throw;
             }
         }
         #endregion

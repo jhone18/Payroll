@@ -191,7 +191,7 @@ function PopulateEmployment() {
         $.each(JSON.parse(result), function () {
             rank.append($("<option />").val(this.id).text(this.value));
         });
-    })  
+    })
 
     $.getJSON("/Employee/GetEmploymentStatus/", function (result) {
         var employmentStatus = $("#employmentStatus");
@@ -590,49 +590,50 @@ function ShowTINEdit() {
 
 
 //==========================  Dependents ==================================//
+$(function () {
+    $('#birthDependentsDatePicker').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2,
+        autoclose: true
+    });
+});
+
 function PopulateDependents() {
-    $(function () {
-        $("#dependentsTable").dataTable({
-            "processing": true, // for show progress bar
-            "serverSide": true, // for process server side
-            "filter": false, // this is for disable filter (search box)
-            "ordering": false,
-            lengthChange: false,
-            destroy: true,
-            "ajax": {
-                "url": "/Employee/GetDependentsDetail?employeeId=" + $("#employeeSearchTextId").val(),
-                "type": "GET",
-                "contentType": 'application/json; charset=utf-8',
-                "datatype": "json"
-            },
-            "columns": [
-                { "data": "dependentName", "name": "Dependent Name" },
-                { "data": "birthDate", "name": "Birth Date" },
-                { "data": "htmlButtons", "name": "" }
-            ]
-        });
-
-        $('#birthDatePicker').datetimepicker({
-            format: 'mm/dd/yyyy',
-            minView: 2,
-            autoclose: true
-        });
-
+    $("#dependentsTable").dataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": false, // this is for disable filter (search box)
+        "ordering": false,
+        lengthChange: false,
+        destroy: true,
+        "ajax": {
+            "url": "/Employee/GetDependentsDetail?employeeId=" + $("#employeeSearchTextId").val(),
+            "type": "GET",
+            "contentType": 'application/json; charset=utf-8',
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "dependentName", "name": "Dependent Name" },
+            { "data": "birthDate", "name": "Birth Date", "render": function (d) { return moment(d).format("MM/DD/YYYY"); } },
+            { "data": "htmlButtons", "name": "" }
+        ]
     });
 }
 
 function clearTextBox_Dependents() {
     $('#dependentsId').val("");
     $('#dependentsName').val("");
-    $('#birthDate').val("");
+    $('#dependentsBirthDate').val("");
     $('#updateDependents').hide();
     $('#addDependents').show();
 }
 
 function add_Dependents() {
     var dependents = {
-        DependentsName: $('#dependentsName').val(),
-        BirthDate: $('#birthDate').val()
+        CompanyID: "<company>",
+        EmployeeID: $("#employeeSearchTextId").val(),
+        DependentName: $('#dependentsName').val(),
+        BirthDate: $('#dependentsBirthDate').val()
     };
     $.ajax({
         url: "/Employee/CreateDependents",
@@ -651,15 +652,15 @@ function add_Dependents() {
 
 function show_Dependents(dependentsId) {
     $.ajax({
-        url: "/Employee/Details/?dependentsId=" + dependentsId,
+        url: "/Employee/DetailsDependents?dependentsId=" + dependentsId,
         type: "GET",
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
         success: function (result) {
             var data = jQuery.parseJSON(result);
             $('#dependentsId').val(data.RowId);
-            $('#dependentsName').val(data.DependentsName);
-            $('#birthDate').val(data.BirthDate);
+            $('#dependentsName').val(data.DependentName);
+            $('#dependentsBirthDate').val(moment(data.BirthDate).format("MM/DD/YYYY"));
             $('#dependentsModal').modal('show');
             $('#updateDependents').show();
             $('#addDependents').hide();
@@ -674,11 +675,14 @@ function show_Dependents(dependentsId) {
 function update_Dependents() {
 
     var dependents = {
-        DependentsName: $('#dependentsName').val(),
-        BirthDate: $('#birthDate').val()
+        RowId: $("#dependentsId").val(),
+        CompanyID: "<company>",
+        EmployeeID: $("#employeeSearchTextId").val(),
+        DependentName: $('#dependentsName').val(),
+        BirthDate: $('#dependentsBirthDate').val()
     };
     $.ajax({
-        url: "/Employee/Edit",
+        url: "/Employee/EditDependents",
         type: "POST",
         data: "dependents=" + JSON.stringify(dependents),
         dataType: "json",
@@ -687,7 +691,7 @@ function update_Dependents() {
             $('#dependentsModal').modal('hide');
             $('#dependentsId').val("");
             $('#dependentsName').val("");
-            $('#birthDate').val("");
+            $('#dependentsBirthDate').val("");
         },
         error: function (errormessage) {
             showMessage(errormessage.statusText);
@@ -697,7 +701,7 @@ function update_Dependents() {
 
 function delete_Dependents(dependentsId) {
     $.ajax({
-        url: "/Employee/Delete",
+        url: "/Employee/DeleteDependents",
         type: "POST",
         data: "dependentsId=" + dependentsId,
         dataType: "json",

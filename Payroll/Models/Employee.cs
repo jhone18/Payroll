@@ -20,8 +20,7 @@ namespace Payroll.Models
         public string PayrollType { get; set; }
         public bool? Confi { get; set; }
         public string Gender { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
+        public string Address { get; set; }
         public string Position { get; set; }
         public string CostCenter { get; set; }
         public string Division { get; set; }

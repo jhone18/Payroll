@@ -1137,9 +1137,7 @@ namespace Payroll.Data
                     .HasColumnName("AdditionalHDMF")
                     .HasColumnType("decimal");
 
-                entity.Property(e => e.Address1).HasColumnType("varchar(200)");
-
-                entity.Property(e => e.Address2).HasColumnType("varchar(50)");
+                entity.Property(e => e.Address).HasColumnType("varchar(200)");
 
                 entity.Property(e => e.AllowedOt)
                     .HasColumnName("AllowedOT")

@@ -176,6 +176,10 @@
     });
 });
 
+function PopulatePersonal() {
+
+}
+
 function PopulateEmployment() {
     $.getJSON("/Employee/GetEmploymentType/", function (result) {
         var employmentType = $("#employmentType");
@@ -352,8 +356,9 @@ function getEmployeeDetails() {
         $("#lastName").val(result.LastName);
         $("#firstName").val(result.FirstName);
         $("#middleName").val(result.MiddleName);
+        $("#birthDate").val(result.BirthDate);
         $("#gender").val(result.Gender);
-        $("#address").val(result.Address1);
+        $("#address").val(result.Address);
 
         $("#employmentType").val(result.EmploymentType);
         $("#position").val(result.Position);
@@ -587,7 +592,40 @@ function ShowTINEdit() {
     $("#tinSave").hide();
     $("#tinEdit").show();
 }
+//==========================  Personal ==================================//
+$(function () {
+    $('#birthDatePicker').datetimepicker({
+        format: 'mm/dd/yyyy',
+        minView: 2,
+        autoclose: true
+    });
+});
 
+function update_Personal() {
+
+    var employee = {
+        EmployeeId: $("#employeeId").val(),
+        LastName: $("#lastName").val(),
+        FirstName: $('#firstName').val(),
+        MiddleName: $('#middleName').val(),
+        Gender: $('#gender').val(),
+        BirthDate: $('#birthDate').val(),
+        Address: $('#address').val()
+    };
+    $.ajax({
+        url: "/Employee/UpdateEmployeePersonal",
+        type: "POST",
+        data: "employee=" + JSON.stringify(employee),
+        dataType: "json",
+        success: function (result) {
+            ShowEmploymentEdit();
+        },
+        error: function (errormessage) {
+            showMessage(errormessage.statusText);
+        }
+    });
+}
+//==========================  Personal ==================================//
 
 //==========================  Dependents ==================================//
 $(function () {

@@ -253,6 +253,33 @@ namespace Payroll.Controllers
                 throw;
             }
         }
+        [HttpPost]
+        public JsonResult UpdateEmployeePersonal(string employee)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                if (ModelState.IsValid)
+                {
+                    Employee employeeObj = JsonConvert.DeserializeObject<Employee>(employee);
+                    var employeeToUpdate = _context.Employee.Where(e => e.EmployeeId.Trim() == employeeObj.EmployeeId.Trim()).FirstOrDefault();
+                    employeeObj.CompanyId = HttpContext.Session.GetString("CompanyId");
+                    employeeObj.CreatedBy = "admin";
+                    employeeObj.CreatedDate  = DateTime.Now;
+                    employeeObj.LastUpdBy = "admin";
+                    employeeObj.LastUpdDate = DateTime.Now;
+                    _context.Entry(employeeToUpdate).CurrentValues.SetValues(employeeObj);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { Success = true });
+            }
+            catch
+            {
+                throw;
+            }
+        }
         #endregion
 
         #region Payroll

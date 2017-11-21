@@ -16,8 +16,8 @@
                 <span class="glyphicon glyphicon-pencil update" aria-hidden='true'></span>
             </a>
         </div>
-        <div id="employmentSave" onclick="ShowEmploymentEdit();" style="display:none;cursor:pointer">
-            <a class='item-action item-action-raised' title='Save'>
+        <div id="employmentSave" style="display:none;cursor:pointer">
+            <a class='item-action item-action-raised' title='Save' onclick="update_Personal();">
                 <span class="glyphicon glyphicon-save" aria-hidden='true'></span>
             </a>
             <a class='item-action item-action-raised' title='Cancel Changes'>
@@ -56,7 +56,12 @@
         <label>Birth Date</label>
     </div>
     <div class="col-md-7">
-        <input type="text" class="form-control" id="birthDate"/>
+        <div class="col-md-6 input-group date" id="birthDatePicker" style="padding-right:15px;">
+            <input type="text" class="form-control" id="birthDate" />
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+            </span>
+        </div>
     </div>
     <div class="col-md-3">
         <label>Adress</label>

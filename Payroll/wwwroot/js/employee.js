@@ -17,6 +17,11 @@
                 case 3:
                     PopulateStatutory();
                     break;
+                case 4:
+                    break;
+                case 5:
+                    PopulateDependents();
+                    break;
             }
         }
     });
@@ -427,6 +432,11 @@ function loadActiveTab() {
         case 3:
             PopulateStatutory();
             break;
+        case 4:
+            break;
+        case 5:
+            PopulateDependents();
+            break;
     }
 }
 
@@ -577,3 +587,127 @@ function ShowTINEdit() {
     $("#tinSave").hide();
     $("#tinEdit").show();
 }
+
+
+//==========================  Dependents ==================================//
+function PopulateDependents() {
+    $(function () {
+        $("#dependentsTable").dataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": false, // this is for disable filter (search box)
+            "ordering": false,
+            lengthChange: false,
+            destroy: true,
+            "ajax": {
+                "url": "/Employee/GetDependentsDetail?employeeId=" + $("#employeeSearchTextId").val(),
+                "type": "GET",
+                "contentType": 'application/json; charset=utf-8',
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "dependentName", "name": "Dependent Name" },
+                { "data": "birthDate", "name": "Birth Date" },
+                { "data": "htmlButtons", "name": "" }
+            ]
+        });
+
+        $('#birthDatePicker').datetimepicker({
+            format: 'mm/dd/yyyy',
+            minView: 2,
+            autoclose: true
+        });
+
+    });
+}
+
+function clearTextBox_Dependents() {
+    $('#dependentsId').val("");
+    $('#dependentsName').val("");
+    $('#birthDate').val("");
+    $('#updateDependents').hide();
+    $('#addDependents').show();
+}
+
+function add_Dependents() {
+    var dependents = {
+        DependentsName: $('#dependentsName').val(),
+        BirthDate: $('#birthDate').val()
+    };
+    $.ajax({
+        url: "/Employee/CreateDependents",
+        data: "dependents=" + JSON.stringify(dependents),
+        type: "POST",
+        dataType: "json",
+        success: function (result) {
+            $("#dependentsTable").DataTable().ajax.reload();
+            $('#dependentsModal').modal('hide');
+        },
+        error: function (errormessage) {
+            showMessage(errormessage.statusText);
+        }
+    });
+}
+
+function show_Dependents(dependentsId) {
+    $.ajax({
+        url: "/Employee/Details/?dependentsId=" + dependentsId,
+        type: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            var data = jQuery.parseJSON(result);
+            $('#dependentsId').val(data.RowId);
+            $('#dependentsName').val(data.DependentsName);
+            $('#birthDate').val(data.BirthDate);
+            $('#dependentsModal').modal('show');
+            $('#updateDependents').show();
+            $('#addDependents').hide();
+        },
+        error: function (errormessage) {
+            showMessage(errormessage.statusText);
+        }
+    });
+    return false;
+}
+
+function update_Dependents() {
+
+    var dependents = {
+        DependentsName: $('#dependentsName').val(),
+        BirthDate: $('#birthDate').val()
+    };
+    $.ajax({
+        url: "/Employee/Edit",
+        type: "POST",
+        data: "dependents=" + JSON.stringify(dependents),
+        dataType: "json",
+        success: function (result) {
+            $("#dependentsTable").DataTable().ajax.reload();
+            $('#dependentsModal').modal('hide');
+            $('#dependentsId').val("");
+            $('#dependentsName').val("");
+            $('#birthDate').val("");
+        },
+        error: function (errormessage) {
+            showMessage(errormessage.statusText);
+        }
+    });
+}
+
+function delete_Dependents(dependentsId) {
+    $.ajax({
+        url: "/Employee/Delete",
+        type: "POST",
+        data: "dependentsId=" + dependentsId,
+        dataType: "json",
+        success: function (result) {
+            $("#dependentsTable").DataTable().ajax.reload();
+            $('#deleteDependentsModal' + dependentsId).modal('hide');
+        },
+        error: function (errormessage) {
+            showMessage(errormessage.statusText);
+        }
+    });
+}
+//==========================  Dependents ==================================//

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Payroll.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Payroll.Models;
 
 namespace Payroll.Controllers
 {
@@ -394,5 +395,81 @@ namespace Payroll.Controllers
         }
         #endregion
 
+        #region Dependents
+        public IActionResult Dependents()
+        {
+            return View();
+        }
+        public async Task<JsonResult> GetDependentsDetail(int draw, int start, int length, string employeeId)
+        {
+            try
+            {
+                var dependents = new List<Dependents>();
+                var companyId = HttpContext.Session.GetString("CompanyId");
+                if (string.IsNullOrEmpty(employeeId))
+                {
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = dependents });
+                }
+                else
+                {
+                    dependents = await _context.Dependents.Where(d=> d.EmployeeId.Trim() == employeeId.Trim() && d.CompanyId.Trim() == companyId.Trim() ).AsNoTracking().ToListAsync();
+                }
+                var recordsTotal = dependents.Count();
+
+                if (dependents == null)
+                {
+                    return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = dependents });
+                }
+                var data = (from d in dependents
+                            let htmlButtons = "<a href = '#' onclick=show_Dependents('" + d.RowId + "'); class='item-action item-action-raised' title='Edit'>" +
+                                            "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<a href = '#' class='item-action item-action-danger' title='Delete' data-toggle='modal' data-target='#deleteDependentsModal" + d.RowId + "'>" +
+                                            "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>" +
+                                        "</a>" +
+                                        "<div class='modal fade' id='deleteDependentsModal" + d.RowId + "' role='dialog' aria-labelledby='dependentsModalLabel' aria-hidden='true'>" +
+                                            "<div class='modal-dialog modal-sm' role='document'>" +
+                                                "<div class='modal-content'>" +
+                                                    "<div class='modal-header'>" +
+                                                        "<button type = 'button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
+                                                        "<h4 class='modal-title' id='dependentsModalLabel'>Confirm Delete</h4>" +
+                                                    "</div>" +
+                                                    "<div class='modal-body'>" +
+                                                        "Are you sure you want to delete ?" +
+                                                    "</div>" +
+                                                    "<div class='modal-footer'>" +
+                                                        "<button type = 'button' class='btn btn-danger' id='deleteDependents' onclick=delete_Dependents('" + d.RowId + "');>Delete</button>" +
+                                                        "<button type = 'button' class='btn btn-default' data-dismiss='modal'>Close</button>" +
+                                                    "</div>" +
+                                                "</div>" +
+                                            "</div>" +
+                                        "</div>"
+                            select new { d.DependentName, d.BirthDate, htmlButtons });
+
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data.Skip(start).Take(length) });
+            }
+            catch
+            {
+                return Json(new { draw = draw, recordsFiltered = 0, recordsTotal = 0, data = new Dependents() });
+            }
+        }
+        public async Task<IActionResult> Details(int dependentsId)
+        {
+            try
+            {
+                var dependent = await _context.Dependents.AsNoTracking().SingleOrDefaultAsync(d => d.RowId == dependentsId);
+
+                if (dependent == null)
+                {
+                    return null;
+                }
+                return Json(JsonConvert.SerializeObject(dependent));
+            }
+            catch
+            {
+                return Json(JsonConvert.SerializeObject(new Users()));
+            }
+        }
+        #endregion
     }
 }
